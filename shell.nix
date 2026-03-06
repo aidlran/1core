@@ -11,7 +11,7 @@ pkgs.mkShell {
     rustc
   ];
 
-  buildInputs = with pkgs;[
+  buildInputs = with pkgs; [
     at-spi2-atk
     atkmm
     cairo
