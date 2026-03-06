@@ -5,16 +5,16 @@ import { inMemory } from '@astrobase/sdk/in-memory';
 import { createInstance } from '@astrobase/sdk/instance';
 import { WithNodeKDF } from '@astrobase/sdk/kdf/node';
 import { createKeyring, loadKeyring } from '@astrobase/sdk/keyrings';
-import assert from 'assert';
-import { randomBytes } from 'crypto';
-import { expect, test } from 'vitest';
+import { WithECDSA } from '@astrobase/sdk/signatures/ecdsa';
+import { randomBytes } from 'node:crypto';
+import { assert, expect, test } from 'vitest';
 import { deleteEntry, getEntry, getIndex, saveIndex } from '../../../../lib/luna/content.mjs';
 import pkg from '../../package.json' with { type: 'json' };
 import { deleteEntryHook, saveEntry } from './content.mjs';
 
 const randText = (length = 8) => randomBytes(length).toString('base64');
 
-const instance = createInstance(Common, WithNodeCrypt, WithNodeKDF, {
+const instance = createInstance(Common, WithECDSA, WithNodeCrypt, WithNodeKDF, {
   clients: [{ strategy: inMemory() }],
 });
 const passphrase = randText();
