@@ -10,10 +10,6 @@
   "author": "Aidan Loughran",
   "type": "module",
   "dependencies": {
-    "@bitcoinerlab/secp256k1": "^1.0.0",
-    "@noble/secp256k1": "^2.3.0",
-    "better-sqlite3": "^12.4.1",
-    "bip32": "5.0.0",
     "commander": "^14.0.3",
     "env-paths": "3.0.0"
   }
