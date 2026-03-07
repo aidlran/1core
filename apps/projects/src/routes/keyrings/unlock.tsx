@@ -40,14 +40,14 @@ export default (): JSX.Element => (
             <Show when={keyringCount()}>
               {(count) => (
                 <Show when={count() > 1}>
-                  <A class="button" href="..">
+                  <A class="button m-[1ch]" href="..">
                     Back to keyring selection
                   </A>
                 </Show>
               )}
             </Show>
 
-            <A class="button" href="../create">
+            <A class="button m-[1ch]" href="../create">
               Create New Keyring
             </A>
 

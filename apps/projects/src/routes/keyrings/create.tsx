@@ -19,7 +19,7 @@ export default (): JSX.Element => (
             <Title>Create Keyring | 1core Pulse</Title>
 
             <Show when={keyringCIDs()?.length}>
-              <A class="button" href="..">
+              <A class="button m-[1ch]" href="..">
                 Back to keyring selection
               </A>
             </Show>

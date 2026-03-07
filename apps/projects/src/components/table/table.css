@@ -1,0 +1,21 @@
+@reference "../../app.css";
+
+@layer components {
+  table {
+    @apply w-full bg-focus;
+
+    button,
+    .button {
+      @apply m-0;
+    }
+
+    td,
+    th {
+      @apply p-[1ch];
+    }
+
+    th {
+      @apply font-normal text-left;
+    }
+  }
+}

@@ -14,7 +14,9 @@ export function EditableText(props: EditableTextProps): JSX.Element {
       when={editing()}
       fallback={
         <button
-          class={('min-h-8 text-left ' + (props.class ?? '')).trimEnd()}
+          class={(
+            'text-left p-[1ch] focus:bg-comment hover:bg-comment ' + (props.class ?? '')
+          ).trimEnd()}
           on:click={() => (setEditing(true), input.focus())}
         >
           {props.value()}

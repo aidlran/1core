@@ -39,7 +39,7 @@ export default (): JSX.Element => (
           <main class="text-center">
             <Title>Keyrings | 1core Pulse</Title>
 
-            <A class="button" href="create">
+            <A class="button m-[1ch]" href="create">
               Create New Keyring
             </A>
 
@@ -48,7 +48,7 @@ export default (): JSX.Element => (
             <For each={keyrings()}>
               {(_, i) => (
                 <button
-                  class="my-3"
+                  class="button m-[1ch]"
                   onClick={() => {
                     setSelectedKeyring(i());
                     navigate('unlock', { replace: true });

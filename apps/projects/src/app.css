@@ -16,30 +16,22 @@
 
 @layer base {
   :root {
-    @apply bg-bg text-fg font-mono;
+    @apply bg-bg text-fg font-mono leading-none;
   }
 
   * {
     @apply border-comment;
   }
 
+  button,
   a,
   A {
-    @apply text-purple;
+    @apply text-purple cursor-pointer;
   }
 
-  button,
-  a.button,
-  A.button {
-    @apply px-[2ch] py-[1ch] m-[1ch] cursor-pointer bg-purple text-bg inline-block;
-  }
-
-  table {
-    button,
-    a.button,
-    A.button {
-      @apply m-0;
-    }
+  .button,
+  form button {
+    @apply p-[1ch] cursor-pointer bg-purple text-bg inline-block;
   }
 
   button:focus,
@@ -57,16 +49,7 @@
 
   form input,
   form button {
-    @apply block my-[1ch] w-full max-w-lg m-auto;
-  }
-
-  th {
-    @apply font-normal;
-  }
-
-  th,
-  td {
-    @apply text-left border px-[1ch];
+    @apply block w-full max-w-lg mx-auto my-[1ch];
   }
 
   h1 {
