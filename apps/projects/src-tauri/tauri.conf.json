@@ -1,8 +1,8 @@
 {
   "$schema": "../../../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "luna-projects",
+  "productName": "1core Pulse",
   "version": "0.1.0",
-  "identifier": "me.astrobase.luna",
+  "identifier": "io.1core.pulse",
   "build": {
     "frontendDist": "../.output/public",
     "devUrl": "http://localhost:3000",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Luna Projects",
+        "title": "1core Pulse",
         "width": 800,
         "height": 600,
         "resizable": true,

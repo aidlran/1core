@@ -16,7 +16,7 @@ export default (): JSX.Element => (
       return (
         <KeyringGuard unlockStatus={false} redirectPath="/">
           <main class="text-center">
-            <Title>Create Keyring | Luna Projects</Title>
+            <Title>Create Keyring | 1core Pulse</Title>
 
             <Show when={keyringCIDs()?.length}>
               <A href="..">Back to keyring selection</A>

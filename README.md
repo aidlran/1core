@@ -1,10 +1,10 @@
-# Luna Application Suite
+# 1core App Suite
 
-A suite of applications powered by [Astrobase](https://astrobase.me/sdk):
+A suite of apps powered by [Astrobase](https://astrobase.me/sdk):
 
-- **Luna Pass:** Encrypted password and secrets management CLI app.
-- **Luna Note:** Encrypted notes management CLI app.
-- **Luna Projects:** (WIP) Encrypted todo GUI app.
+- **1core Note:** Encrypted notes management CLI app.
+- **1core Pulse:** Encrypted project management GUI app.
+- **1core Vault:** Encrypted password and secrets management CLI app.
 
 ## Installation
 

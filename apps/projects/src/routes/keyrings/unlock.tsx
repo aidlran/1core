@@ -35,7 +35,7 @@ export default (): JSX.Element => (
       return (
         <KeyringGuard unlockStatus={false} redirectPath="/">
           <main class="text-center">
-            <Title>Unlock Keyring | Luna Projects</Title>
+            <Title>Unlock Keyring | 1core Pulse</Title>
 
             <Show when={keyringCount()}>
               {(count) => (

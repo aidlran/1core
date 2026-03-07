@@ -22,7 +22,7 @@ const FilterCheckbox = (
 
 export default (): JSX.Element => (
   <main>
-    <Title>Home | Luna Projects</Title>
+    <Title>Home | 1core Pulse</Title>
     <Show when={instance()}>
       {(instance) => {
         const [addingTask, setAddingTask] = createSignal(false);

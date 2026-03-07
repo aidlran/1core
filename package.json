@@ -1,8 +1,8 @@
 {
-  "name": "luna-monorepo",
+  "name": "1core",
   "version": "0.1.0",
   "private": true,
-  "description": "Luna app suite monorepo",
+  "description": "1core app suite monorepo",
   "homepage": "https://github.com/aidlran/luna#readme",
   "bugs": "https://github.com/aidlran/luna/issues",
   "repository": "github:aidlran/luna",

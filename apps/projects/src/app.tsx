@@ -9,7 +9,7 @@ export default () => (
   <Router
     root={(props) => (
       <MetaProvider>
-        <Title>Luna Projects</Title>
+        <Title>1core Pulse</Title>
         <Suspense>{props.children}</Suspense>
       </MetaProvider>
     )}
