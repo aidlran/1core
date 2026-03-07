@@ -4,7 +4,7 @@ export interface EditableTextProps extends Omit<JSX.IntrinsicElements['input'], 
   value: Accessor<string | undefined>;
 }
 
-export default ({ value, ...props }: EditableTextProps): JSX.Element => {
+export function EditableText(props: EditableTextProps): JSX.Element {
   const [editing, setEditing] = createSignal(false);
 
   let input!: HTMLInputElement;
@@ -17,17 +17,17 @@ export default ({ value, ...props }: EditableTextProps): JSX.Element => {
           class={('min-h-8 text-left ' + (props.class ?? '')).trimEnd()}
           on:click={() => (setEditing(true), input.focus())}
         >
-          {value()}
+          {props.value()}
         </button>
       }
     >
       <input
         {...props}
-        value={value()}
+        value={props.value()}
         ref={input}
         on:blur={() => setEditing(false)}
         on:keydown={(e) => (e.key === 'Escape' || e.key === 'Enter') && input.blur()}
       />
     </Show>
   );
-};
+}

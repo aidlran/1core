@@ -1,23 +1,11 @@
 import type { ContentIdentifier } from '@astrobase/sdk/cid';
-import { CryptOptions } from '@astrobase/sdk/crypt';
 import { deleteImmutable } from '@astrobase/sdk/immutable';
-import { createEffect, createSignal, type Accessor, type Signal } from 'solid-js';
+import { type Accessor, createSignal, type Setter } from 'solid-js';
 import { get, getIndex, put, saveIndex } from '../../../../lib/luna/content.mjs';
-import { instance, keyringUnlocked, selectedKeyring } from './astrobase';
+import { assert } from './assert';
+import { instance } from './astrobase';
 
-export interface Entity {
-  name: Signal<string>;
-  completed: Signal<boolean>;
-  start: Signal<string | undefined>;
-  end: Signal<string | undefined>;
-  created: number;
-  updated: Signal<number>;
-
-  cid: Signal<ContentIdentifier | undefined>;
-
-  dependencies: Accessor<EntityDependency[]>;
-  blocked: Accessor<boolean>;
-}
+export type EntityDependency = [dependent: Entity, dependee: Entity];
 
 export interface EntityPojo {
   name: string;
@@ -29,141 +17,207 @@ export interface EntityPojo {
   cid: ContentIdentifier;
 }
 
-export type EntityDependency = [dependent: Entity, dependee: Entity];
+export interface Entity {
+  name: Accessor<string>;
+  setName: Setter<string>;
 
-const identityID = 'luna-projects';
+  completed: Accessor<boolean>;
+  setCompleted: Setter<boolean>;
 
-export const cryptOverrides: Partial<CryptOptions> = {
+  start: Accessor<string | undefined>;
+  setStart: Setter<string | undefined>;
+
+  end: Accessor<string | undefined>;
+  setEnd: Setter<string | undefined>;
+
+  created: number;
+
+  updated: Accessor<number>;
+  setUpdated: Setter<number>;
+
+  cid: Accessor<ContentIdentifier | undefined>;
+  setCID: Setter<ContentIdentifier | undefined>;
+
+  dependencies: Accessor<EntityDependency[]>;
+
+  blocked: Accessor<boolean>;
+}
+
+export interface EntityRootPojo {
+  entities: ContentIdentifier[];
+  dependencies: [ContentIdentifier, ContentIdentifier][];
+}
+
+export interface EntityRoot {
+  readonly identityID: string;
+
+  entities: Accessor<Entity[]>;
+  setEntities: Setter<Entity[]>;
+
+  entityDependencies: Accessor<EntityDependency[]>;
+  setEntityDependencies: Setter<EntityDependency[]>;
+}
+
+const identityID = '1core';
+
+export const cryptOverrides = {
   encAlg: 'XChaCha20-Poly1305',
   nonce: crypto.getRandomValues(new Uint8Array(24)),
-};
+} as const;
 
-export const [entities, setEntities] = createSignal<Entity[]>([]);
+export function getEntityRootForDerivedIdentity(identityID: string): EntityRoot {
+  const [entities, setEntities] = createSignal<Entity[]>([]);
 
-export const [entityDependencies, setEntityDependencies] = createSignal<EntityDependency[]>([]);
+  const [entityDependencies, setEntityDependencies] = createSignal<EntityDependency[]>([]);
 
-export function objectToEntity(entityPojo: Partial<EntityPojo>): Entity {
+  const entityRoot = {
+    identityID,
+
+    entities,
+    setEntities,
+
+    entityDependencies,
+    setEntityDependencies,
+  };
+
+  void refreshEntityRoot(entityRoot);
+
+  return entityRoot;
+}
+
+function objectToEntity(entityRoot: EntityRoot, entityPojo: Partial<EntityPojo>): Entity {
+  const [name, setName] = createSignal(entityPojo.name ?? '');
+  const [completed, setCompleted] = createSignal(entityPojo.completed ?? false);
+  const [start, setStart] = createSignal(entityPojo.start);
+  const [end, setEnd] = createSignal(entityPojo.end);
+  const [updated, setUpdated] = createSignal(entityPojo.updated ?? Date.now());
+  const [cid, setCID] = createSignal(entityPojo.cid);
+
   const entity: Entity = {
-    name: createSignal(entityPojo.name ?? ''),
-    completed: createSignal(entityPojo.completed ?? false),
-    start: createSignal(entityPojo.start),
-    end: createSignal(entityPojo.end),
+    name,
+    setName,
+
+    completed,
+    setCompleted,
+
+    start,
+    setStart,
+
+    end,
+    setEnd,
+
     created: entityPojo.created ?? Date.now(),
-    updated: createSignal(entityPojo.updated ?? Date.now()),
 
-    cid: createSignal(entityPojo.cid),
+    updated,
+    setUpdated,
 
-    dependencies: () => entityDependencies().filter(([dependent]) => dependent === entity),
+    cid,
+    setCID,
+
+    dependencies: () =>
+      entityRoot.entityDependencies().filter(([dependent]) => dependent === entity),
 
     blocked: () =>
-      entity.dependencies().some(([, dependee]) => !dependee.completed[0]() || dependee.blocked()),
+      entity.dependencies().some(([, dependee]) => !dependee.completed() || dependee.blocked()),
   };
 
   return entity;
 }
 
-export const saveRoot = async () =>
-  saveIndex(
-    instance()!,
-    identityID,
-    {
-      entities: await Promise.all(entities().map(({ cid }) => cid[0]())),
-      dependencies: await Promise.all(
-        entityDependencies().map(([a, b]) => Promise.all([a.cid[0](), b.cid[0]()])),
-      ),
-    },
-    cryptOverrides,
-  );
+async function refreshEntityRoot(entityRoot: EntityRoot) {
+  const _instance = assert(instance());
 
-async function saveEntity(entity: Entity) {
-  const config = instance()!;
+  let pojo: EntityRootPojo | void;
 
+  try {
+    pojo = await getIndex<EntityRootPojo>(_instance, identityID);
+  } catch {
+    return;
+  }
+
+  if (pojo) {
+    const entityMap: Record<string, Promise<Entity>> = {};
+
+    const loadEntity = async (cid: ContentIdentifier) =>
+      (entityMap[cid.toString()] ??= (get(_instance, cid) as Promise<EntityPojo>).then((pojo) =>
+        objectToEntity(entityRoot, { ...pojo, cid }),
+      ));
+
+    await Promise.all([
+      Promise.all(pojo.entities.map(loadEntity)).then(entityRoot.setEntities),
+
+      Promise.all(
+        pojo.dependencies.map(([a, b]) => Promise.all([loadEntity(a), loadEntity(b)])),
+      ).then(entityRoot.setEntityDependencies),
+    ]);
+  }
+}
+
+export async function saveEntityRoot(entityRoot: EntityRoot) {
+  const [entitiesPOJO, dependenciesPOJO] = await Promise.all([
+    Promise.all(entityRoot.entities().map(({ cid }) => assert(cid()))),
+    Promise.all(
+      entityRoot
+        .entityDependencies()
+        .map(([a, b]) => Promise.all([assert(a.cid()), assert(b.cid())])),
+    ),
+  ]);
+
+  const pojo: EntityRootPojo = { entities: entitiesPOJO, dependencies: dependenciesPOJO };
+
+  await saveIndex(assert(instance()), identityID, pojo, cryptOverrides);
+}
+
+export async function saveEntity(entityRoot: EntityRoot, entity: Entity) {
   const cid = await put(
-    config,
+    assert(instance()),
     identityID,
     {
-      name: entity.name[0](),
-      completed: entity.completed[0](),
-      start: entity.start[0](),
-      end: entity.end[0](),
+      name: entity.name(),
+      completed: entity.completed(),
+      start: entity.start(),
+      end: entity.end(),
       created: entity.created,
-      updated: entity.updated[0](),
+      updated: entity.updated(),
     },
     undefined,
     cryptOverrides,
   );
 
-  entity.cid[1](cid);
+  entity.setCID(cid);
 
-  saveRoot();
+  await saveEntityRoot(entityRoot);
 }
 
-export async function createEntity(entityPojo: Partial<EntityPojo>) {
-  const entity = objectToEntity(entityPojo);
-  setEntities((entities) => [entity, ...entities]);
-  saveEntity(entity);
+export function createEntity(entityRoot: EntityRoot, entityPojo: Partial<EntityPojo>) {
+  const entity = objectToEntity(entityRoot, entityPojo);
+  entityRoot.setEntities((entities) => [entity, ...entities]);
+  saveEntity(entityRoot, entity);
 }
 
-export async function updateEntity(entity: Entity, update?: () => unknown, force?: boolean) {
-  const originalCID = entity.cid[0]();
+export function updateEntity(
+  entityRoot: EntityRoot,
+  entity: Entity,
+  update?: () => unknown,
+  force?: boolean,
+) {
+  const originalCID = entity.cid();
 
   update?.();
 
-  const newCID = entity.cid[0]();
+  const newCID = entity.cid();
 
   if (force !== true && originalCID && newCID && newCID.toString() === originalCID.toString()) {
     return;
   }
 
-  entity.updated[1](Date.now());
+  entity.setUpdated(Date.now());
 
-  const config = instance()!;
+  const _instance = assert(instance());
 
-  saveEntity(entity);
+  saveEntity(entityRoot, entity);
 
   if (originalCID) {
-    deleteImmutable(config, originalCID.value);
+    deleteImmutable(_instance, originalCID.value);
   }
 }
-
-createEffect(async () => {
-  const config = instance();
-
-  if (!config || !keyringUnlocked() || selectedKeyring() === undefined) {
-    return;
-  }
-
-  let root: {
-    entities: ContentIdentifier[];
-    dependencies: [ContentIdentifier, ContentIdentifier][];
-  };
-
-  try {
-    root = (await getIndex(config, identityID)) as {
-      entities: ContentIdentifier[];
-      dependencies: [ContentIdentifier, ContentIdentifier][];
-    };
-  } catch (e) {
-    if (e instanceof RangeError && e.message === 'Identity not found') {
-      return saveRoot();
-    }
-    throw e;
-  }
-
-  if (root) {
-    const entityMap: Record<string, Promise<Entity>> = {};
-
-    const loadEntity = async (cid: ContentIdentifier) =>
-      (entityMap[cid.toString()] ??= (get(config, cid) as Promise<EntityPojo>).then((pojo) =>
-        objectToEntity({ ...pojo, cid }),
-      ));
-
-    await Promise.all([
-      Promise.all(root.entities.map(loadEntity)).then(setEntities),
-
-      Promise.all(
-        root.dependencies.map(([a, b]) => Promise.all([loadEntity(a), loadEntity(b)])),
-      ).then(setEntityDependencies),
-    ]);
-  }
-});

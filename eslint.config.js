@@ -40,6 +40,9 @@ export default defineConfig(
   {
     rules: {
       '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/no-invalid-void-type': 'warn',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/no-unused-expressions': 'off',
       'no-console': 'error',
     },
   },

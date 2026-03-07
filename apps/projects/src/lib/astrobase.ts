@@ -4,6 +4,7 @@ import { WithNobleCrypt } from '@astrobase/sdk/crypt/noble';
 import { indexeddb } from '@astrobase/sdk/indexeddb';
 import { createInstance } from '@astrobase/sdk/instance';
 import { WithWebCryptoKDF } from '@astrobase/sdk/kdf/web-crypto';
+import { WithECDSA } from '@astrobase/sdk/signatures/ecdsa';
 import { createMemo, createResource, createSignal } from 'solid-js';
 
 /**
@@ -11,7 +12,7 @@ import { createMemo, createResource, createSignal } from 'solid-js';
  * configuration on top.
  */
 const baseConfig = createResource(async () =>
-  createInstance(Common, WithWebCryptoCrypt, WithNobleCrypt, WithWebCryptoKDF, {
+  createInstance(Common, WithECDSA, WithWebCryptoCrypt, WithNobleCrypt, WithWebCryptoKDF, {
     clients: [{ strategy: await indexeddb() }],
   }),
 )[0];
