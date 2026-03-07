@@ -40,15 +40,19 @@ export default (): JSX.Element => (
             <Show when={keyringCount()}>
               {(count) => (
                 <Show when={count() > 1}>
-                  <A href="..">Back to keyring selection</A>
+                  <A class="button" href="..">
+                    Back to keyring selection
+                  </A>
                 </Show>
               )}
             </Show>
 
-            <A href="../create">Create New Keyring</A>
+            <A class="button" href="../create">
+              Create New Keyring
+            </A>
 
             <Show when={selectedKeyring() !== undefined}>
-              <h1 class="my-3">Unlock Keyring {selectedKeyring()! + 1}</h1>
+              <h1>Unlock Keyring {selectedKeyring()! + 1}</h1>
             </Show>
 
             <form

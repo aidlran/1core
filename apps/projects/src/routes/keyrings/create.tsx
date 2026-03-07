@@ -19,10 +19,12 @@ export default (): JSX.Element => (
             <Title>Create Keyring | 1core Pulse</Title>
 
             <Show when={keyringCIDs()?.length}>
-              <A href="..">Back to keyring selection</A>
+              <A class="button" href="..">
+                Back to keyring selection
+              </A>
             </Show>
 
-            <h1 class="my-3">Create Keyring</h1>
+            <h1>Create Keyring</h1>
 
             <form
               onSubmit={async (e) => {

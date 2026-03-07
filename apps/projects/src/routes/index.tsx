@@ -37,264 +37,271 @@ export default (): JSX.Element => (
 
         return (
           <KeyringGuard redirectPath="/keyrings" unlockStatus={true}>
-            <A
-              href="/keyrings/unlock"
-              onClick={() => {
-                clearKeyring(instance());
-                setKeyringUnlocked(false);
-              }}
-            >
-              Lock
-            </A>
+            <div class="flex">
+              <FilterCheckbox get={hideBlocked} set={setHideBlocked}>
+                Hide blocked tasks
+              </FilterCheckbox>
 
-            <FilterCheckbox get={hideBlocked} set={setHideBlocked}>
-              Hide blocked tasks
-            </FilterCheckbox>
+              <FilterCheckbox get={hideCompleted} set={setHideCompleted}>
+                Hide completed tasks
+              </FilterCheckbox>
 
-            <FilterCheckbox get={hideCompleted} set={setHideCompleted}>
-              Hide completed tasks
-            </FilterCheckbox>
+              <FilterCheckbox get={hideFuture} set={setHideFuture}>
+                Hide future tasks
+              </FilterCheckbox>
 
-            <FilterCheckbox get={hideFuture} set={setHideFuture}>
-              Hide future tasks
-            </FilterCheckbox>
+              <div class="grow" />
 
-            <table class="w-full">
-              <thead>
-                <tr>
-                  <th>Task</th>
-                  <th>Completed</th>
-                  <th>Start</th>
-                  <th>End</th>
-                  <th>Dependencies</th>
-                  <th>Created</th>
-                  <th>Updated</th>
-                  <th class="text-right">
-                    <button
-                      disabled={addingTask()}
-                      on:click={() => {
-                        setAddingTask(true);
-                        newTaskInput.focus();
-                      }}
-                    >
-                      Add task
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <Show when={addingTask()}>
+              <A
+                class="button"
+                href="/keyrings/unlock"
+                onClick={() => {
+                  clearKeyring(instance());
+                  setKeyringUnlocked(false);
+                }}
+              >
+                Lock
+              </A>
+            </div>
+
+            <div class="mx-[1ch]">
+              <table class="w-full">
+                <thead>
                   <tr>
-                    <td colspan="8">
-                      <input
-                        ref={newTaskInput}
-                        class="w-full"
-                        placeholder="New task"
-                        on:blur={(e) => {
-                          const name = e.currentTarget.value.trim();
-                          name && createEntity(entityRoot, { name });
-                          setAddingTask(false);
+                    <th>Task</th>
+                    <th>Completed</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Dependencies</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th class="p-0 text-right">
+                      <button
+                        disabled={addingTask()}
+                        on:click={() => {
+                          setAddingTask(true);
+                          newTaskInput.focus();
                         }}
-                        on:keydown={(e) =>
-                          (e.key === 'Escape' || e.key === 'Enter') && e.currentTarget.blur()
-                        }
-                      />
-                    </td>
-                  </tr>
-                </Show>
-                <For each={entityRoot.entities()}>
-                  {(entity, i) => {
-                    const created = new Date(entity.created);
-                    const updated = createMemo(() => new Date(entity.updated()));
-
-                    const [addingDependency, setAddingDependency] = createSignal(false);
-                    let dependencyInput!: HTMLInputElement;
-
-                    const EditableDateCell = (props: {
-                      value: Signal<string | undefined>;
-                    }): JSX.Element => (
-                      <td>
-                        <div class="flex">
-                          <EditableDate
-                            class="grow"
-                            value={props.value[0]}
-                            on:change={(e) => {
-                              // eslint-disable-next-line solid/reactivity
-                              updateEntity(entityRoot, entity, () =>
-                                props.value[1](new Date(e.target.value).toISOString()),
-                              );
-                            }}
-                          />
-                          <Show when={props.value[0]()}>
-                            <button
-                              on:click={() => {
-                                // eslint-disable-next-line solid/reactivity
-                                updateEntity(entityRoot, entity, () => props.value[1](undefined));
-                              }}
-                            >
-                              x
-                            </button>
-                          </Show>
-                        </div>
-                      </td>
-                    );
-
-                    return (
-                      <Show
-                        when={
-                          (!hideBlocked() || !entity.blocked()) &&
-                          (!hideCompleted() || !entity.completed()) &&
-                          (!hideFuture() ||
-                            !entity.start() ||
-                            Date.parse(entity.start()!) <= Date.now())
-                        }
                       >
-                        <tr>
-                          <td>
-                            <EditableText
-                              class="w-full"
-                              value={entity.name}
+                        Add task
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <Show when={addingTask()}>
+                    <tr>
+                      <td colspan="8">
+                        <input
+                          ref={newTaskInput}
+                          class="w-full"
+                          placeholder="New task"
+                          on:blur={(e) => {
+                            const name = e.currentTarget.value.trim();
+                            name && createEntity(entityRoot, { name });
+                            setAddingTask(false);
+                          }}
+                          on:keydown={(e) =>
+                            (e.key === 'Escape' || e.key === 'Enter') && e.currentTarget.blur()
+                          }
+                        />
+                      </td>
+                    </tr>
+                  </Show>
+                  <For each={entityRoot.entities()}>
+                    {(entity, i) => {
+                      const created = new Date(entity.created);
+                      const updated = createMemo(() => new Date(entity.updated()));
+
+                      const [addingDependency, setAddingDependency] = createSignal(false);
+                      let dependencyInput!: HTMLInputElement;
+
+                      const EditableDateCell = (props: {
+                        value: Signal<string | undefined>;
+                      }): JSX.Element => (
+                        <td>
+                          <div class="flex">
+                            <EditableDate
+                              class="grow"
+                              value={props.value[0]}
                               on:change={(e) => {
-                                const v = e.target.value.trim();
-                                v && updateEntity(entityRoot, entity, () => entity.setName(v));
+                                // eslint-disable-next-line solid/reactivity
+                                updateEntity(entityRoot, entity, () =>
+                                  props.value[1](new Date(e.target.value).toISOString()),
+                                );
                               }}
                             />
-                          </td>
-
-                          <td>
-                            <input
-                              type="checkbox"
-                              checked={entity.completed()}
-                              on:change={(e) =>
-                                updateEntity(entityRoot, entity, () =>
-                                  entity.setCompleted(e.target.checked),
-                                )
-                              }
-                            />
-                          </td>
-
-                          <EditableDateCell value={[entity.start, entity.setStart]} />
-
-                          <EditableDateCell value={[entity.end, entity.setEnd]} />
-
-                          <td>
-                            <div class="flex justify-between">
-                              <div>
-                                <For each={entityRoot.entityDependencies()}>
-                                  {([dependent, dependee], i) => (
-                                    <Show when={dependent === entity}>
-                                      <div class="border inline">
-                                        {dependee.name()}
-                                        <button
-                                          on:click={() => {
-                                            const index = i();
-                                            entityRoot.setEntityDependencies((v) =>
-                                              v.toSpliced(index, 1),
-                                            );
-                                            updateEntity(entityRoot, entity, undefined, true);
-                                          }}
-                                        >
-                                          x
-                                        </button>
-                                      </div>
-                                    </Show>
-                                  )}
-                                </For>
-                              </div>
-
-                              <Show
-                                when={addingDependency()}
-                                fallback={
-                                  <button
-                                    on:click={() => {
-                                      setAddingDependency(true);
-                                      dependencyInput.focus();
-                                    }}
-                                  >
-                                    +
-                                  </button>
-                                }
+                            <Show when={props.value[0]()}>
+                              <button
+                                on:click={() => {
+                                  // eslint-disable-next-line solid/reactivity
+                                  updateEntity(entityRoot, entity, () => props.value[1](undefined));
+                                }}
                               >
-                                <input
-                                  class="grow"
-                                  list="tasks"
-                                  ref={dependencyInput}
-                                  on:change={async (e) => {
-                                    e.target.blur();
-                                    const dependee = entityRoot
-                                      .entities()
-                                      .find(({ name }) => name() === e.target.value);
-                                    if (dependee) {
-                                      entityRoot.setEntityDependencies((v) => [
-                                        ...v,
-                                        [entity, dependee],
-                                      ]);
-                                      updateEntity(entityRoot, entity, undefined, true);
-                                    }
-                                  }}
-                                  on:blur={() => setAddingDependency(false)}
-                                  on:keydown={(e) =>
-                                    (e.key === 'Escape' || e.key === 'Enter') &&
-                                    dependencyInput.blur()
-                                  }
-                                />
+                                x
+                              </button>
+                            </Show>
+                          </div>
+                        </td>
+                      );
 
-                                <datalist id="tasks">
-                                  <For each={entityRoot.entities()}>
-                                    {(datalistEntity) => (
-                                      <Show
-                                        when={
-                                          // TODO: need to hide it if the entry's dependency chain includes `task`
-                                          //       need to propagate dependencies up
-                                          entity !== datalistEntity &&
-                                          !entity
-                                            .dependencies()
-                                            .some(([, dependee]) => dependee === datalistEntity)
-                                        }
-                                      >
-                                        <option>{datalistEntity.name()}</option>
+                      return (
+                        <Show
+                          when={
+                            (!hideBlocked() || !entity.blocked()) &&
+                            (!hideCompleted() || !entity.completed()) &&
+                            (!hideFuture() ||
+                              !entity.start() ||
+                              Date.parse(entity.start()!) <= Date.now())
+                          }
+                        >
+                          <tr>
+                            <td>
+                              <EditableText
+                                class="w-full"
+                                value={entity.name}
+                                on:change={(e) => {
+                                  const v = e.target.value.trim();
+                                  v && updateEntity(entityRoot, entity, () => entity.setName(v));
+                                }}
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={entity.completed()}
+                                on:change={(e) =>
+                                  updateEntity(entityRoot, entity, () =>
+                                    entity.setCompleted(e.target.checked),
+                                  )
+                                }
+                              />
+                            </td>
+
+                            <EditableDateCell value={[entity.start, entity.setStart]} />
+
+                            <EditableDateCell value={[entity.end, entity.setEnd]} />
+
+                            <td>
+                              <div class="flex justify-between">
+                                <div>
+                                  <For each={entityRoot.entityDependencies()}>
+                                    {([dependent, dependee], i) => (
+                                      <Show when={dependent === entity}>
+                                        <div class="border inline">
+                                          {dependee.name()}
+                                          <button
+                                            on:click={() => {
+                                              const index = i();
+                                              entityRoot.setEntityDependencies((v) =>
+                                                v.toSpliced(index, 1),
+                                              );
+                                              updateEntity(entityRoot, entity, undefined, true);
+                                            }}
+                                          >
+                                            x
+                                          </button>
+                                        </div>
                                       </Show>
                                     )}
                                   </For>
-                                </datalist>
-                              </Show>
-                            </div>
-                          </td>
+                                </div>
 
-                          <td title={created.toLocaleString()}>{created.toLocaleDateString()}</td>
+                                <Show
+                                  when={addingDependency()}
+                                  fallback={
+                                    <button
+                                      on:click={() => {
+                                        setAddingDependency(true);
+                                        dependencyInput.focus();
+                                      }}
+                                    >
+                                      +
+                                    </button>
+                                  }
+                                >
+                                  <input
+                                    class="grow"
+                                    list="tasks"
+                                    ref={dependencyInput}
+                                    on:change={async (e) => {
+                                      e.target.blur();
+                                      const dependee = entityRoot
+                                        .entities()
+                                        .find(({ name }) => name() === e.target.value);
+                                      if (dependee) {
+                                        entityRoot.setEntityDependencies((v) => [
+                                          ...v,
+                                          [entity, dependee],
+                                        ]);
+                                        updateEntity(entityRoot, entity, undefined, true);
+                                      }
+                                    }}
+                                    on:blur={() => setAddingDependency(false)}
+                                    on:keydown={(e) =>
+                                      (e.key === 'Escape' || e.key === 'Enter') &&
+                                      dependencyInput.blur()
+                                    }
+                                  />
 
-                          <td title={updated().toLocaleString()}>
-                            {updated().toLocaleDateString()}
-                          </td>
+                                  <datalist id="tasks">
+                                    <For each={entityRoot.entities()}>
+                                      {(datalistEntity) => (
+                                        <Show
+                                          when={
+                                            // TODO: need to hide it if the entry's dependency chain includes `task`
+                                            //       need to propagate dependencies up
+                                            entity !== datalistEntity &&
+                                            !entity
+                                              .dependencies()
+                                              .some(([, dependee]) => dependee === datalistEntity)
+                                          }
+                                        >
+                                          <option>{datalistEntity.name()}</option>
+                                        </Show>
+                                      )}
+                                    </For>
+                                  </datalist>
+                                </Show>
+                              </div>
+                            </td>
 
-                          <td class="text-right">
-                            <button
-                              on:click={async () => {
-                                const index = i();
-                                entityRoot.setEntities((v) => v.toSpliced(index, 1));
-                                entityRoot.setEntityDependencies((dependencies) =>
-                                  dependencies.filter(
-                                    ([dependent, dependee]) =>
-                                      entity !== dependent && entity !== dependee,
-                                  ),
-                                );
-                                saveEntityRoot(entityRoot);
-                                const cid = entity.cid();
-                                if (cid) {
-                                  deleteImmutable(instance(), cid.value);
-                                }
-                              }}
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      </Show>
-                    );
-                  }}
-                </For>
-              </tbody>
-            </table>
+                            <td title={created.toLocaleString()}>{created.toLocaleDateString()}</td>
+
+                            <td title={updated().toLocaleString()}>
+                              {updated().toLocaleDateString()}
+                            </td>
+
+                            <td class="text-right p-0">
+                              <button
+                                on:click={async () => {
+                                  const index = i();
+                                  entityRoot.setEntities((v) => v.toSpliced(index, 1));
+                                  entityRoot.setEntityDependencies((dependencies) =>
+                                    dependencies.filter(
+                                      ([dependent, dependee]) =>
+                                        entity !== dependent && entity !== dependee,
+                                    ),
+                                  );
+                                  saveEntityRoot(entityRoot);
+                                  const cid = entity.cid();
+                                  if (cid) {
+                                    deleteImmutable(instance(), cid.value);
+                                  }
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        </Show>
+                      );
+                    }}
+                  </For>
+                </tbody>
+              </table>
+            </div>
           </KeyringGuard>
         );
       }}

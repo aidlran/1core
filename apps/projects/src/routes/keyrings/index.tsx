@@ -39,9 +39,11 @@ export default (): JSX.Element => (
           <main class="text-center">
             <Title>Keyrings | 1core Pulse</Title>
 
-            <A href="create">Create New Keyring</A>
+            <A class="button" href="create">
+              Create New Keyring
+            </A>
 
-            <h1 class="my-3">Select a Keyring</h1>
+            <h1>Select a Keyring</h1>
 
             <For each={keyrings()}>
               {(_, i) => (
