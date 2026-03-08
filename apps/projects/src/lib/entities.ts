@@ -14,7 +14,6 @@ export interface EntityPojo {
   end?: string;
   created: number;
   updated: number;
-  cid: ContentIdentifier;
 }
 
 export interface Entity {
@@ -85,13 +84,17 @@ export function getEntityRootForDerivedIdentity(identityID: string): EntityRoot 
   return entityRoot;
 }
 
-function objectToEntity(entityRoot: EntityRoot, entityPojo: Partial<EntityPojo>): Entity {
+function objectToEntity(
+  entityRoot: EntityRoot,
+  entityPojo: Partial<EntityPojo>,
+  _cid?: ContentIdentifier,
+): Entity {
   const [name, setName] = createSignal(entityPojo.name ?? '');
   const [completed, setCompleted] = createSignal(entityPojo.completed ?? false);
   const [start, setStart] = createSignal(entityPojo.start);
   const [end, setEnd] = createSignal(entityPojo.end);
   const [updated, setUpdated] = createSignal(entityPojo.updated ?? Date.now());
-  const [cid, setCID] = createSignal(entityPojo.cid);
+  const [cid, setCID] = createSignal(_cid);
 
   const entity: Entity = {
     name,
@@ -124,6 +127,15 @@ function objectToEntity(entityRoot: EntityRoot, entityPojo: Partial<EntityPojo>)
   return entity;
 }
 
+export const entityToObject = (entity: Entity): EntityPojo => ({
+  name: entity.name(),
+  completed: entity.completed(),
+  start: entity.start(),
+  end: entity.end(),
+  created: entity.created,
+  updated: entity.updated(),
+});
+
 async function refreshEntityRoot(entityRoot: EntityRoot) {
   const _instance = assert(instance());
 
@@ -140,7 +152,7 @@ async function refreshEntityRoot(entityRoot: EntityRoot) {
 
     const loadEntity = async (cid: ContentIdentifier) =>
       (entityMap[cid.toString()] ??= (get(_instance, cid) as Promise<EntityPojo>).then((pojo) =>
-        objectToEntity(entityRoot, { ...pojo, cid }),
+        objectToEntity(entityRoot, pojo, cid),
       ));
 
     await Promise.all([
@@ -172,14 +184,7 @@ export async function saveEntity(entityRoot: EntityRoot, entity: Entity) {
   const cid = await put(
     assert(instance()),
     identityID,
-    {
-      name: entity.name(),
-      completed: entity.completed(),
-      start: entity.start(),
-      end: entity.end(),
-      created: entity.created,
-      updated: entity.updated(),
-    },
+    entityToObject(entity),
     undefined,
     cryptOverrides,
   );
@@ -202,12 +207,13 @@ export function updateEntity(
   force?: boolean,
 ) {
   const originalCID = entity.cid();
+  const originalSerialized = JSON.stringify(entityToObject(entity));
 
   update?.();
 
-  const newCID = entity.cid();
+  const newSerialized = JSON.stringify(entityToObject(entity));
 
-  if (force !== true && originalCID && newCID && newCID.toString() === originalCID.toString()) {
+  if (!force && originalSerialized === newSerialized) {
     return;
   }
 
