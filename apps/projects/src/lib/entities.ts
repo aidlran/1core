@@ -4,17 +4,10 @@ import { type Accessor, createSignal, type Setter } from 'solid-js';
 import { get, getIndex, put, saveIndex } from '../../../../lib/luna/content.mjs';
 import { assert } from './assert';
 import { instance } from './astrobase';
+import { EntityPOJO } from './entity.schema';
+import { EntityRootPOJO } from './entity-root.schema';
 
 export type EntityDependency = [dependent: Entity, dependee: Entity];
-
-export interface EntityPojo {
-  name: string;
-  completed: boolean;
-  start?: string;
-  end?: string;
-  created: number;
-  updated: number;
-}
 
 export interface Entity {
   name: Accessor<string>;
@@ -23,11 +16,11 @@ export interface Entity {
   completed: Accessor<boolean>;
   setCompleted: Setter<boolean>;
 
-  start: Accessor<string | undefined>;
-  setStart: Setter<string | undefined>;
+  start: Accessor<number | undefined>;
+  setStart: Setter<number | undefined>;
 
-  end: Accessor<string | undefined>;
-  setEnd: Setter<string | undefined>;
+  deadline: Accessor<number | undefined>;
+  setDeadline: Setter<number | undefined>;
 
   created: number;
 
@@ -40,11 +33,6 @@ export interface Entity {
   dependencies: Accessor<EntityDependency[]>;
 
   blocked: Accessor<boolean>;
-}
-
-export interface EntityRootPojo {
-  entities: ContentIdentifier[];
-  dependencies: [ContentIdentifier, ContentIdentifier][];
 }
 
 export interface EntityRoot {
@@ -86,13 +74,13 @@ export function getEntityRootForDerivedIdentity(identityID: string): EntityRoot 
 
 function objectToEntity(
   entityRoot: EntityRoot,
-  entityPojo: Partial<EntityPojo>,
+  entityPojo: Partial<EntityPOJO>,
   _cid?: ContentIdentifier,
 ): Entity {
   const [name, setName] = createSignal(entityPojo.name ?? '');
   const [completed, setCompleted] = createSignal(entityPojo.completed ?? false);
   const [start, setStart] = createSignal(entityPojo.start);
-  const [end, setEnd] = createSignal(entityPojo.end);
+  const [deadline, setDeadline] = createSignal(entityPojo.deadline);
   const [updated, setUpdated] = createSignal(entityPojo.updated ?? Date.now());
   const [cid, setCID] = createSignal(_cid);
 
@@ -106,8 +94,8 @@ function objectToEntity(
     start,
     setStart,
 
-    end,
-    setEnd,
+    deadline,
+    setDeadline,
 
     created: entityPojo.created ?? Date.now(),
 
@@ -127,11 +115,11 @@ function objectToEntity(
   return entity;
 }
 
-export const entityToObject = (entity: Entity): EntityPojo => ({
+export const entityToObject = (entity: Entity): EntityPOJO => ({
   name: entity.name(),
   completed: entity.completed(),
   start: entity.start(),
-  end: entity.end(),
+  deadline: entity.deadline(),
   created: entity.created,
   updated: entity.updated(),
 });
@@ -139,10 +127,10 @@ export const entityToObject = (entity: Entity): EntityPojo => ({
 async function refreshEntityRoot(entityRoot: EntityRoot) {
   const _instance = assert(instance());
 
-  let pojo: EntityRootPojo | void;
+  let pojo: EntityRootPOJO | void;
 
   try {
-    pojo = await getIndex<EntityRootPojo>(_instance, identityID);
+    pojo = await getIndex<EntityRootPOJO>(_instance, identityID);
   } catch {
     return;
   }
@@ -151,7 +139,7 @@ async function refreshEntityRoot(entityRoot: EntityRoot) {
     const entityMap: Record<string, Promise<Entity>> = {};
 
     const loadEntity = async (cid: ContentIdentifier) =>
-      (entityMap[cid.toString()] ??= (get(_instance, cid) as Promise<EntityPojo>).then((pojo) =>
+      (entityMap[cid.toString()] ??= (get(_instance, cid) as Promise<EntityPOJO>).then((pojo) =>
         objectToEntity(entityRoot, pojo, cid),
       ));
 
@@ -175,7 +163,7 @@ export async function saveEntityRoot(entityRoot: EntityRoot) {
     ),
   ]);
 
-  const pojo: EntityRootPojo = { entities: entitiesPOJO, dependencies: dependenciesPOJO };
+  const pojo: EntityRootPOJO = { entities: entitiesPOJO, dependencies: dependenciesPOJO };
 
   await saveIndex(assert(instance()), identityID, pojo, cryptOverrides);
 }
@@ -194,7 +182,7 @@ export async function saveEntity(entityRoot: EntityRoot, entity: Entity) {
   await saveEntityRoot(entityRoot);
 }
 
-export function createEntity(entityRoot: EntityRoot, entityPojo: Partial<EntityPojo>) {
+export function createEntity(entityRoot: EntityRoot, entityPojo: Partial<EntityPOJO>) {
   const entity = objectToEntity(entityRoot, entityPojo);
   entityRoot.setEntities((entities) => [entity, ...entities]);
   saveEntity(entityRoot, entity);

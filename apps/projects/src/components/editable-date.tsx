@@ -1,8 +1,9 @@
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { EditableText, type EditableTextProps } from './editable-text';
 
-export interface EditableDateProps extends Omit<EditableTextProps, 'on:change'> {
+export interface EditableDateProps extends Omit<EditableTextProps, 'on:change' | 'value'> {
   'on:change'?: JSX.ChangeEventHandler<HTMLInputElement, Event>;
+  value: Accessor<number | undefined>;
 }
 
 export const EditableDate = (props: EditableDateProps) => (
@@ -10,7 +11,15 @@ export const EditableDate = (props: EditableDateProps) => (
     {...props}
     value={() => {
       const value = props.value();
-      return value ? new Date(value).toISOString() : '';
+      if (value === undefined) {
+        return '';
+      }
+
+      if (value % 864e5 == 0) {
+        return new Date(value).toLocaleDateString();
+      }
+
+      return new Date(value).toLocaleString();
     }}
     on:change={
       props?.['on:change']

@@ -117,7 +117,7 @@ export default (): JSX.Element => (
                     let dependencyInput!: HTMLInputElement;
 
                     const EditableDateCell = (props: {
-                      value: Signal<string | undefined>;
+                      value: Signal<number | undefined>;
                     }): JSX.Element => (
                       <td>
                         <div class="flex">
@@ -127,7 +127,7 @@ export default (): JSX.Element => (
                             on:change={(e) => {
                               // eslint-disable-next-line solid/reactivity
                               updateEntity(entityRoot, entity, () =>
-                                props.value[1](new Date(e.target.value).toISOString()),
+                                props.value[1](Date.parse(e.target.value)),
                               );
                             }}
                           />
@@ -150,9 +150,7 @@ export default (): JSX.Element => (
                         when={
                           (!hideBlocked() || !entity.blocked()) &&
                           (!hideCompleted() || !entity.completed()) &&
-                          (!hideFuture() ||
-                            !entity.start() ||
-                            Date.parse(entity.start()!) <= Date.now())
+                          (!hideFuture() || !entity.start() || entity.start()! <= Date.now())
                         }
                       >
                         <tr>
@@ -181,7 +179,7 @@ export default (): JSX.Element => (
 
                           <EditableDateCell value={[entity.start, entity.setStart]} />
 
-                          <EditableDateCell value={[entity.end, entity.setEnd]} />
+                          <EditableDateCell value={[entity.deadline, entity.setDeadline]} />
 
                           <td>
                             <div class="flex justify-between">
