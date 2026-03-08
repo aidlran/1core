@@ -3,7 +3,7 @@ import { clearKeyring } from '@astrobase/sdk/keyrings';
 import { Title } from '@solidjs/meta';
 import { A } from '@solidjs/router';
 // prettier-ignore
-import { type Accessor, createMemo, createSignal, For, type JSX, type ParentProps, type Setter, Show, type Signal } from 'solid-js';
+import { type Accessor, createSignal, For, type JSX, type ParentProps, type Setter, Show, type Signal } from 'solid-js';
 import { EditableDate } from '~/components/editable-date';
 import { EditableText } from '~/components/editable-text';
 import { KeyringGuard } from '~/components/keyring-guard';
@@ -11,6 +11,7 @@ import Table from '~/components/table/table';
 import { instance, setKeyringUnlocked } from '~/lib/astrobase';
 // prettier-ignore
 import { createEntity, getEntityRootForDerivedIdentity, saveEntityRoot, updateEntity } from '~/lib/entities';
+import { timestampToString } from '~/lib/timestamps';
 
 const FilterCheckbox = (
   props: ParentProps<{ get: Accessor<boolean>; set: Setter<boolean> }>,
@@ -110,9 +111,6 @@ export default (): JSX.Element => (
                 </Show>
                 <For each={entityRoot.entities()}>
                   {(entity, i) => {
-                    const created = new Date(entity.created);
-                    const updated = createMemo(() => new Date(entity.updated()));
-
                     const [addingDependency, setAddingDependency] = createSignal(false);
                     let dependencyInput!: HTMLInputElement;
 
@@ -265,11 +263,9 @@ export default (): JSX.Element => (
                             </div>
                           </td>
 
-                          <td title={created.toLocaleString()}>{created.toLocaleDateString()}</td>
+                          <td>{timestampToString(entity.created)}</td>
 
-                          <td title={updated().toLocaleString()}>
-                            {updated().toLocaleDateString()}
-                          </td>
+                          <td>{timestampToString(entity.updated())}</td>
 
                           <td class="text-right">
                             <button

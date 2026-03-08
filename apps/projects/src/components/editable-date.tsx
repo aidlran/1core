@@ -1,4 +1,5 @@
 import type { Accessor, JSX } from 'solid-js';
+import { timestampToString } from '~/lib/timestamps';
 import { EditableText, type EditableTextProps } from './editable-text';
 
 export interface EditableDateProps extends Omit<EditableTextProps, 'on:change' | 'value'> {
@@ -9,18 +10,7 @@ export interface EditableDateProps extends Omit<EditableTextProps, 'on:change' |
 export const EditableDate = (props: EditableDateProps) => (
   <EditableText
     {...props}
-    value={() => {
-      const value = props.value();
-      if (value === undefined) {
-        return '';
-      }
-
-      if (value % 864e5 == 0) {
-        return new Date(value).toLocaleDateString();
-      }
-
-      return new Date(value).toLocaleString();
-    }}
+    value={() => timestampToString(props.value())}
     on:change={
       props?.['on:change']
         ? (e) => !isNaN(Date.parse(e.target.value)) && props?.['on:change']?.(e)
