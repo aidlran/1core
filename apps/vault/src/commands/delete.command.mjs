@@ -1,4 +1,4 @@
-import deleteCommand from '../../../../lib/luna/commands/delete.command.mjs';
+import deleteCommand from '../../../../lib/1core/commands/delete.command.mjs';
 import pkg from '../../package.json' with { type: 'json' };
 import { deleteEntryHook } from '../lib/content.mjs';
 import { init } from '../lib/init.mjs';

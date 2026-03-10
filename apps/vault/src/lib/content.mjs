@@ -1,6 +1,6 @@
 import { deleteContent } from '@astrobase/sdk/content';
 // prettier-ignore
-import { assertEntryExists, get, getEntry, getIndex, put, saveIndex } from '../../../../lib/luna/content.mjs';
+import { assertEntryExists, get, getEntry, getIndex, put, saveIndex } from '../../../../lib/1core/content.mjs';
 import pkg from '../../package.json' with { type: 'json' };
 
 /**
@@ -67,7 +67,7 @@ export async function saveEntry(instance, id, props) {
   await saveIndex(instance, pkg.name, index);
 }
 
-/** @type {import('../../../../lib/luna/content.mjs').DeleteEntryHook<IndexValue>} */
+/** @type {import('../../../../lib/1core/content.mjs').DeleteEntryHook<IndexValue>} */
 export async function deleteEntryHook({ cid }, instance) {
   /** @type {Promise<unknown>[]} */
   const promises = [];

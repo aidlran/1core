@@ -1,7 +1,7 @@
-import { get, put } from '../../../../lib/luna/content.mjs';
-import { initInstance } from '../../../../lib/luna/init.mjs';
-import { legacyGet } from '../../../../lib/luna/legacy-content.mjs';
-import { migrate } from '../../../../lib/luna/migrate.mjs';
+import { get, put } from '../../../../lib/1core/content.mjs';
+import { initInstance } from '../../../../lib/1core/init.mjs';
+import { legacyGet } from '../../../../lib/1core/legacy-content.mjs';
+import { migrate } from '../../../../lib/1core/migrate.mjs';
 import pkg from '../../package.json' with { type: 'json' };
 
 /**

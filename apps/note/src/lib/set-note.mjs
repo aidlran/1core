@@ -1,5 +1,5 @@
 import { deleteContent } from '../../../../lib/astrobase/dist/content/api.js';
-import { getIndex, put, saveIndex } from '../../../../lib/luna/content.mjs';
+import { getIndex, put, saveIndex } from '../../../../lib/1core/content.mjs';
 import pkg from '../../package.json' with { type: 'json' };
 
 /**

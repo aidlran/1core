@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import listCommand from '../../../lib/luna/commands/list.command.mjs';
-import renameCommand from '../../../lib/luna/commands/rename.command.mjs';
+import listCommand from '../../../lib/1core/commands/list.command.mjs';
+import renameCommand from '../../../lib/1core/commands/rename.command.mjs';
 import pkg from '../package.json' with { type: 'json' };
 import appendCommand from './commands/append.command.mjs';
 import catCommand from './commands/cat.command.mjs';

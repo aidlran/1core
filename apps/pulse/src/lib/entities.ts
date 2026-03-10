@@ -1,7 +1,7 @@
 import type { ContentIdentifier } from '@astrobase/sdk/cid';
 import { deleteImmutable } from '@astrobase/sdk/immutable';
 import { type Accessor, createSignal, type Setter } from 'solid-js';
-import { get, getIndex, put, saveIndex } from '../../../../lib/luna/content.mjs';
+import { get, getIndex, put, saveIndex } from '../../../../lib/1core/content.mjs';
 import { assert } from './assert';
 import { instance } from './astrobase';
 import { EntityPOJO } from './entity.schema';

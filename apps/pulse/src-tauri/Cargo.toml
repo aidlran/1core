@@ -1,10 +1,10 @@
 [package]
-name = "luna-projects"
+name = "onecore-pulse"
 version = "0.1.0"
 description = "A project management application."
 authors = ["Aidan Loughran"]
 license = "AGPL-3.0-only"
-repository = "https://github.com/aidlran/luna"
+repository = "https://github.com/1coreio/1core"
 edition = "2021"
 rust-version = "1.77.2"
 

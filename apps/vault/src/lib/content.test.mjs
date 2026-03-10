@@ -8,7 +8,7 @@ import { createKeyring, loadKeyring } from '@astrobase/sdk/keyrings';
 import { WithECDSA } from '@astrobase/sdk/signatures/ecdsa';
 import { randomBytes } from 'node:crypto';
 import { assert, expect, test } from 'vitest';
-import { deleteEntry, getEntry, getIndex, saveIndex } from '../../../../lib/luna/content.mjs';
+import { deleteEntry, getEntry, getIndex, saveIndex } from '../../../../lib/1core/content.mjs';
 import pkg from '../../package.json' with { type: 'json' };
 import { deleteEntryHook, saveEntry } from './content.mjs';
 

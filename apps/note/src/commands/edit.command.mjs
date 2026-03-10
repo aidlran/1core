@@ -5,8 +5,8 @@ import { randomUUID } from 'crypto';
 import { readFileSync, statSync, unlinkSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
-import { get, getIndex, put, saveIndex } from '../../../../lib/luna/content.mjs';
-import { dbOption } from '../../../../lib/luna/db.option.mjs';
+import { get, getIndex, put, saveIndex } from '../../../../lib/1core/content.mjs';
+import { dbOption } from '../../../../lib/1core/db.option.mjs';
 import pkg from '../../package.json' with { type: 'json' };
 import { init } from '../lib/init.mjs';
 

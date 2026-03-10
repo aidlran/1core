@@ -8,7 +8,7 @@ import {
   strictObject,
   string,
 } from 'valibot';
-import { pastTimestamp, timestamp } from './schemas';
+import { pastTimestamp, timestamp } from './schemas.js';
 
 /** Valibot schema of an entity POJO as stored. */
 export const EntitySchema = strictObject({

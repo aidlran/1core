@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "description": "1core app suite monorepo",
-  "homepage": "https://github.com/aidlran/luna#readme",
-  "bugs": "https://github.com/aidlran/luna/issues",
-  "repository": "github:aidlran/luna",
+  "homepage": "https://github.com/1coreio/1core#readme",
+  "bugs": "https://github.com/1coreio/1core/issues",
+  "repository": "github:1coreio/1core",
   "license": "AGPL-3.0-only",
   "author": "Aidan Loughran",
   "type": "module",
   "bin": {
-    "luna-note": "apps/note/src/cli.mjs",
-    "luna-pass": "apps/pass/src/cli.mjs"
+    "1core-note": "apps/note/src/cli.mjs",
+    "1core-vault": "apps/vault/src/cli.mjs"
   },
   "workspaces": [
     "apps/*",
