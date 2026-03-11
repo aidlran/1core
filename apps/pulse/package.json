@@ -16,6 +16,10 @@
     "web:dev": "vinxi dev",
     "web:preview": "node .output/server/index.mjs"
   },
+  "overrides": {
+    "h3": "^1.15.6",
+    "@rollup/plugin-terser": "^1.0.0"
+  },
   "dependencies": {
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.4",
