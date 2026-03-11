@@ -1,6 +1,5 @@
 import { Command } from 'commander';
 import { dbOption } from '../../../../lib/1core/db.option.mjs';
-import pkg from '../../package.json' with { type: 'json' };
 import { getAssertedEntryProps, saveEntry } from '../lib/content.mjs';
 import { init } from '../lib/init.mjs';
 import { promptSecrets } from '../lib/prompt.mjs';
@@ -10,7 +9,7 @@ import { secretOption } from '../options/secret.options.mjs';
 export default new Command('update')
   .argument('<name>')
   .description('Update an existing entry')
-  .addOption(dbOption(pkg.name))
+  .addOption(dbOption())
   .addOption(propertyOption)
   .addOption(secretOption)
   .option('-d, --delete <keys-to-delete...>', 'specify keys to delete')

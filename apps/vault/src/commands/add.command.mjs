@@ -11,7 +11,7 @@ import { secretOption } from '../options/secret.options.mjs';
 export default new Command('add')
   .argument('<name>')
   .description('Add an entry')
-  .addOption(dbOption(pkg.name))
+  .addOption(dbOption())
   .addOption(propertyOption)
   .addOption(secretOption)
   .action(async (id, { db, property, secret }) => {

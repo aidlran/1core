@@ -10,7 +10,7 @@ import timeoutOption from '../options/timeout.option.mjs';
 export default new Command('append')
   .arguments('<name>')
   .description('Append to a new or existing note from stdin')
-  .addOption(dbOption(pkg.name))
+  .addOption(dbOption())
   .addOption(timeoutOption)
   .action(async (name, { db, timeout }) => {
     const chunks = await readStdin(timeout);

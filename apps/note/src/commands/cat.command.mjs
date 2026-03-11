@@ -8,7 +8,7 @@ export default new Command('cat')
   .alias('get')
   .argument('<name>')
   .description('Retrieve a note & print to stdout')
-  .addOption(dbOption(pkg.name))
+  .addOption(dbOption())
   .action(async function (name, { db }) {
     const instance = await init(db);
 

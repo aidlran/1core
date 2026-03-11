@@ -13,7 +13,7 @@ import { init } from '../lib/init.mjs';
 export default new Command('edit')
   .argument('<name>')
   .description(`Edit or create a note with EDITOR (${process.env.EDITOR})`)
-  .addOption(dbOption(pkg.name))
+  .addOption(dbOption())
   .action(async (name, { db }) => {
     const instance = await init(db);
 
