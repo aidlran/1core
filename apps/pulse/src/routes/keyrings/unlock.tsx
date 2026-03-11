@@ -3,8 +3,13 @@ import { getAvailableKeyringCIDs, loadKeyring } from '@astrobase/sdk/keyrings';
 import { Title } from '@solidjs/meta';
 import { A, useNavigate } from '@solidjs/router';
 import { createEffect, createResource, createSignal, Show, type JSX } from 'solid-js';
-import { KeyringGuard } from '~/components/keyring-guard';
-import { instance, selectedKeyring, setKeyringUnlocked, setSelectedKeyring } from '~/lib/astrobase';
+import { KeyringGuard } from '../../components/keyring-guard';
+import {
+  instance,
+  selectedKeyring,
+  setKeyringUnlocked,
+  setSelectedKeyring,
+} from '../../lib/astrobase';
 
 export default (): JSX.Element => (
   <Show when={instance()}>
@@ -62,7 +67,7 @@ export default (): JSX.Element => (
                   setIsWorking(true);
                   const i = instance();
                   const passphrase = e.currentTarget.passphrase.value;
-                  const cid = keyringCIDs()![selectedKeyring()!];
+                  const cid = keyringCIDs()![selectedKeyring()!]!;
                   await loadKeyring(i, { cid, passphrase, wordlist });
                   setKeyringUnlocked(true);
                 } finally {

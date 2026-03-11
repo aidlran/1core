@@ -17,6 +17,7 @@ export default defineConfig(
       },
     },
   },
+  // @ts-expect-error
   {
     files: ['**/*.{ts,tsx}'],
     ...solid,

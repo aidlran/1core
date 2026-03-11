@@ -1,6 +1,6 @@
 import {
   boolean,
-  InferInput,
+  type InferInput,
   maxLength,
   minLength,
   optional,

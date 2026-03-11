@@ -1,5 +1,5 @@
 import type { Accessor, JSX } from 'solid-js';
-import { timestampToString } from '~/lib/timestamps';
+import { timestampToString } from '../lib/timestamps';
 import { EditableText, type EditableTextProps } from './editable-text';
 
 export interface EditableDateProps extends Omit<EditableTextProps, 'on:change' | 'value'> {

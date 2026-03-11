@@ -4,8 +4,8 @@ import { type Accessor, createSignal, type Setter } from 'solid-js';
 import { get, getIndex, put, saveIndex } from '../../../../lib/1core/content.mjs';
 import { assert } from './assert';
 import { instance } from './astrobase';
-import { EntityPOJO } from './entity.schema';
-import { EntityRootPOJO } from './entity-root.schema';
+import type { EntityPOJO } from './entity.schema';
+import type { EntityRootPOJO } from './entity-root.schema';
 
 export type EntityDependency = [dependent: Entity, dependee: Entity];
 

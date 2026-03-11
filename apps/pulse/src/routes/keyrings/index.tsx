@@ -1,11 +1,11 @@
 import { getContent } from '@astrobase/sdk/content';
 import { FileBuilder } from '@astrobase/sdk/file';
-import { getAvailableKeyringCIDs, PersistedKeyring } from '@astrobase/sdk/keyrings';
+import { getAvailableKeyringCIDs, type PersistedKeyring } from '@astrobase/sdk/keyrings';
 import { Title } from '@solidjs/meta';
 import { A, createAsync, useNavigate } from '@solidjs/router';
 import { createEffect, createResource, For, Show, type JSX } from 'solid-js';
-import { KeyringGuard } from '~/components/keyring-guard';
-import { instance, setSelectedKeyring } from '~/lib/astrobase';
+import { KeyringGuard } from '../../components/keyring-guard';
+import { instance, setSelectedKeyring } from '../../lib/astrobase';
 
 export default (): JSX.Element => (
   <Show when={instance()}>

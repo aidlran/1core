@@ -3,8 +3,8 @@ import { createKeyring, getAvailableKeyringCIDs, loadKeyring } from '@astrobase/
 import { Title } from '@solidjs/meta';
 import { A } from '@solidjs/router';
 import { createResource, createSignal, Show, type JSX } from 'solid-js';
-import { KeyringGuard } from '~/components/keyring-guard';
-import { instance, setKeyringUnlocked, setSelectedKeyring } from '~/lib/astrobase';
+import { KeyringGuard } from '../../components/keyring-guard';
+import { instance, setKeyringUnlocked, setSelectedKeyring } from '../../lib/astrobase';
 
 export default (): JSX.Element => (
   <Show when={instance()}>
@@ -39,7 +39,7 @@ export default (): JSX.Element => (
                   const nCID = cid.toString();
                   const keyringCIDs = await getAvailableKeyringCIDs(_instance);
                   for (let i = 0; i < keyringCIDs.length; i++) {
-                    if (keyringCIDs[i].toString() === nCID) {
+                    if (keyringCIDs[i]!.toString() === nCID) {
                       setSelectedKeyring(i);
                       break;
                     }

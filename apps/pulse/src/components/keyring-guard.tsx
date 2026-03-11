@@ -1,6 +1,6 @@
 import { useNavigate } from '@solidjs/router';
 import { createEffect, JSX, Show } from 'solid-js';
-import { keyringUnlocked } from '~/lib/astrobase';
+import { keyringUnlocked } from '../lib/astrobase';
 
 export interface KeyringGuardProps {
   children: JSX.Element;

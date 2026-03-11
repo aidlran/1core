@@ -4,14 +4,14 @@ import { Title } from '@solidjs/meta';
 import { A } from '@solidjs/router';
 // prettier-ignore
 import { type Accessor, createSignal, For, type JSX, type ParentProps, type Setter, Show, type Signal } from 'solid-js';
-import { EditableDate } from '~/components/editable-date';
-import { EditableText } from '~/components/editable-text';
-import { KeyringGuard } from '~/components/keyring-guard';
-import Table from '~/components/table/table';
-import { instance, setKeyringUnlocked } from '~/lib/astrobase';
+import { EditableDate } from '../components/editable-date';
+import { EditableText } from '../components/editable-text';
+import { KeyringGuard } from '../components/keyring-guard';
+import Table from '../components/table/table';
+import { instance, setKeyringUnlocked } from '../lib/astrobase';
 // prettier-ignore
-import { createEntity, getEntityRootForDerivedIdentity, saveEntityRoot, updateEntity } from '~/lib/entities';
-import { timestampToString } from '~/lib/timestamps';
+import { createEntity, getEntityRootForDerivedIdentity, saveEntityRoot, updateEntity } from '../lib/entities';
+import { timestampToString } from '../lib/timestamps';
 
 const FilterCheckbox = (
   props: ParentProps<{ get: Accessor<boolean>; set: Setter<boolean> }>,
