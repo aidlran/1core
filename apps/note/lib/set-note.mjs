@@ -1,6 +1,6 @@
-import { deleteContent } from '../../../../lib/astrobase/dist/content/api.js';
-import { getIndex, put, saveIndex } from '../../../../lib/1core/content.mjs';
-import pkg from '../../package.json' with { type: 'json' };
+import { getIndex, put, saveIndex } from '../../../lib/1core/content.mjs';
+import { deleteContent } from '../../../lib/astrobase/dist/content/api.js';
+import { appName } from './app-name.mjs';
 
 /**
  * @param {import('@astrobase/sdk/instance').Instance} instance
@@ -9,7 +9,7 @@ import pkg from '../../package.json' with { type: 'json' };
  */
 export default async function (instance, name, chunks) {
   /** @type {Record<string, import('@astrobase/sdk/cid').ContentIdentifier>} */
-  const index = (await getIndex(instance, pkg.name)) || {};
+  const index = (await getIndex(instance, appName)) || {};
 
   /** @type {Buffer} */
   const newNote = Buffer.concat(chunks);
@@ -20,11 +20,11 @@ export default async function (instance, name, chunks) {
 
   const oldCID = index[name];
 
-  index[name] = await put(instance, pkg.name, newNote, 'application/octet-stream');
+  index[name] = await put(instance, appName, newNote, 'application/octet-stream');
 
   newNote.fill(0);
 
-  await saveIndex(instance, pkg.name, index);
+  await saveIndex(instance, appName, index);
 
   // eslint-disable-next-line no-console
   console.log('Note saved');

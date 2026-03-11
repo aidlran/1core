@@ -1,13 +1,13 @@
 import { deleteContent } from '@astrobase/sdk/content';
-import { spawnSync } from 'child_process';
 import { Command } from 'commander';
-import { randomUUID } from 'crypto';
-import { readFileSync, statSync, unlinkSync, writeFileSync } from 'fs';
-import { tmpdir } from 'os';
-import { join } from 'path';
-import { get, getIndex, put, saveIndex } from '../../../../lib/1core/content.mjs';
-import { dbOption } from '../../../../lib/1core/db.option.mjs';
-import pkg from '../../package.json' with { type: 'json' };
+import { spawnSync } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
+import { readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { get, getIndex, put, saveIndex } from '../../../lib/1core/content.mjs';
+import { dbOption } from '../../../lib/1core/db.option.mjs';
+import { appName } from '../lib/app-name.mjs';
 import { init } from '../lib/init.mjs';
 
 export default new Command('edit')
@@ -18,7 +18,7 @@ export default new Command('edit')
     const instance = await init(db);
 
     /** @type {Record<string, import('@astrobase/sdk/cid').ContentIdentifier>} */
-    const index = (await getIndex(instance, pkg.name)) || {};
+    const index = (await getIndex(instance, appName)) || {};
 
     const oldCID = index[name];
 
@@ -33,9 +33,9 @@ export default new Command('edit')
     note.fill(0);
 
     if (changed) {
-      index[name] = await put(instance, pkg.name, newNote, 'application/octet-stream');
+      index[name] = await put(instance, appName, newNote, 'application/octet-stream');
       newNote.fill(0);
-      await saveIndex(instance, pkg.name, index);
+      await saveIndex(instance, appName, index);
       // eslint-disable-next-line no-console
       console.log('Note saved');
       if (oldCID) {

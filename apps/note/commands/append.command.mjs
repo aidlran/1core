@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import { get, getIndex } from '../../../../lib/1core/content.mjs';
-import { dbOption } from '../../../../lib/1core/db.option.mjs';
-import pkg from '../../package.json' with { type: 'json' };
+import { get, getIndex } from '../../../lib/1core/content.mjs';
+import { dbOption } from '../../../lib/1core/db.option.mjs';
+import { appName } from '../lib/app-name.mjs';
 import { init } from '../lib/init.mjs';
 import readStdin from '../lib/read-stdin.mjs';
 import setNote from '../lib/set-note.mjs';
@@ -18,7 +18,7 @@ export default new Command('append')
     const instance = await init(db);
 
     /** @type {Record<string, import('@astrobase/sdk/cid').ContentIdentifier>} */
-    const index = (await getIndex(instance, pkg.name)) || {};
+    const index = (await getIndex(instance, appName)) || {};
 
     const oldCID = index[name];
 

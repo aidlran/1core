@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { dbOption } from '../../../../lib/1core/db.option.mjs';
+import { dbOption } from '../../../lib/1core/db.option.mjs';
 import { getAssertedEntryProps } from '../lib/content.mjs';
 import { init } from '../lib/init.mjs';
 

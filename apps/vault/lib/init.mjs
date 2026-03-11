@@ -1,17 +1,23 @@
-import { get, put } from '../../../../lib/1core/content.mjs';
-import { initInstance } from '../../../../lib/1core/init.mjs';
-import { legacyGet } from '../../../../lib/1core/legacy-content.mjs';
-import { migrate } from '../../../../lib/1core/migrate.mjs';
-import pkg from '../../package.json' with { type: 'json' };
+import { get, put } from '../../../lib/1core/content.mjs';
+import { initInstance } from '../../../lib/1core/init.mjs';
+import { legacyGet } from '../../../lib/1core/legacy-content.mjs';
+import { migrate } from '../../../lib/1core/migrate.mjs';
+import { appName, legacyAppName } from './app-name.mjs';
 
 /**
  * @param {string} dbFilePath
  * @returns {Promise<import('@astrobase/sdk/instance').Instance>}
  */
 export const init = async (dbFilePath) =>
-  // @ts-expect-error
-  (await migrate(dbFilePath, pkg.name, cloneCallback, updateEntryCallback, checkCallback)) ??
-  (await initInstance(dbFilePath, pkg.name));
+  (await migrate(
+    dbFilePath,
+    legacyAppName,
+    appName,
+    // @ts-expect-error
+    cloneCallback,
+    updateEntryCallback,
+    checkCallback,
+  )) ?? (await initInstance(dbFilePath, appName));
 
 /**
  * @param {import('./content.mjs').Index} index
@@ -38,14 +44,14 @@ async function updateEntryCallback(entry, oldInstance, newInstance) {
 
   // Push each generation onto stack (oldest on top)
   do {
-    const entry = await legacyGet(oldInstance, pkg.name, prev, 'application/json');
+    const entry = await legacyGet(oldInstance, legacyAppName, prev, 'application/json');
     stack.push(entry.props);
     ({ prev } = entry);
   } while (prev);
 
   // Pop throughout the stack to build a new chain
   while (stack.length) {
-    prev = await put(newInstance, pkg.name, { prev, props: stack.pop() });
+    prev = await put(newInstance, appName, { prev, props: stack.pop() });
   }
 
   return { added: entry.added, cid: prev };
@@ -70,7 +76,7 @@ async function checkCallback(id, before, after, oldInstance, newInstance, error)
 
   do {
     const newContent = await get(newInstance, newPrev);
-    const oldContent = await legacyGet(oldInstance, pkg.name, oldPrev, 'application/json');
+    const oldContent = await legacyGet(oldInstance, legacyAppName, oldPrev, 'application/json');
 
     if (JSON.stringify(newContent.props) !== JSON.stringify(oldContent.props)) {
       error(`${id}{${generation}}.props do not match`);

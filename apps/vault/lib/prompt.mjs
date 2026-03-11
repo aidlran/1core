@@ -1,4 +1,4 @@
-import { prompt } from '../../../../lib/1core/readline.mjs';
+import { prompt } from '../../../lib/1core/readline.mjs';
 
 /**
  * @param {Partial<Record<string, string>>} obj

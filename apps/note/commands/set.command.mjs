@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { dbOption } from '../../../../lib/1core/db.option.mjs';
+import { dbOption } from '../../../lib/1core/db.option.mjs';
 import { init } from '../lib/init.mjs';
 import readStdin from '../lib/read-stdin.mjs';
 import setNote from '../lib/set-note.mjs';

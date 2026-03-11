@@ -1,7 +1,7 @@
 import { assert, describe, expect, it } from 'vitest';
-import { generateID } from '../../../../lib/test/generate-id.mjs';
-import { passphrase } from '../../../../lib/test/passphrase.mjs';
-import { spawnCommand } from '../../../../lib/test/spawn-command.mjs';
+import { generateID } from '../../../lib/test/generate-id.mjs';
+import { passphrase } from '../../../lib/test/passphrase.mjs';
+import { spawnCommand } from '../../../lib/test/spawn-command.mjs';
 
 describe('Get command', () => {
   it('Refuses if entry does not exist', async () => {

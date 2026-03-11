@@ -1,7 +1,7 @@
 import { deleteContent } from '@astrobase/sdk/content';
 // prettier-ignore
-import { assertEntryExists, get, getEntry, getIndex, put, saveIndex } from '../../../../lib/1core/content.mjs';
-import pkg from '../../package.json' with { type: 'json' };
+import { assertEntryExists, get, getEntry, getIndex, put, saveIndex } from '../../../lib/1core/content.mjs';
+import { appName } from './app-name.mjs';
 
 /**
  * @typedef IndexValue
@@ -23,12 +23,12 @@ import pkg from '../../package.json' with { type: 'json' };
  * @returns {Promise<(Entry['props'] & { added: string }) | undefined>}
  */
 export async function getEntryProps(instance, id) {
-  const entry = await getEntry(instance, pkg.name, id);
+  const entry = await getEntry(instance, appName, id);
 
   return entry
     ? {
         ...entry.props,
-        added: (await getIndex(instance, pkg.name))[id]?.added,
+        added: (await getIndex(instance, appName))[id]?.added,
       }
     : undefined;
 }
@@ -39,7 +39,7 @@ export async function getEntryProps(instance, id) {
  * @returns {Promise<import('./content.mjs').Entry['props']>}
  */
 export async function getAssertedEntryProps(instance, id) {
-  await assertEntryExists(instance, pkg.name, id);
+  await assertEntryExists(instance, appName, id);
   const props = await getEntryProps(instance, id);
   if (!props) {
     // eslint-disable-next-line no-console
@@ -55,19 +55,19 @@ export async function getAssertedEntryProps(instance, id) {
  * @param {Entry['props']} props
  */
 export async function saveEntry(instance, id, props) {
-  const index = await getIndex(instance, pkg.name);
+  const index = await getIndex(instance, appName);
   const now = new Date().toISOString();
   props.updated ??= now;
   const added = props.added ?? index[id]?.added ?? now;
   delete props.added;
   index[id] = {
     added,
-    cid: await put(instance, pkg.name, { prev: index[id]?.cid, props }),
+    cid: await put(instance, appName, { prev: index[id]?.cid, props }),
   };
-  await saveIndex(instance, pkg.name, index);
+  await saveIndex(instance, appName, index);
 }
 
-/** @type {import('../../../../lib/1core/content.mjs').DeleteEntryHook<IndexValue>} */
+/** @type {import('../../../lib/1core/content.mjs').DeleteEntryHook<IndexValue>} */
 export async function deleteEntryHook({ cid }, instance) {
   /** @type {Promise<unknown>[]} */
   const promises = [];

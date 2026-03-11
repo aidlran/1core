@@ -1,8 +1,8 @@
-import { get, put } from '../../../../lib/1core/content.mjs';
-import { initInstance } from '../../../../lib/1core/init.mjs';
-import { legacyGet } from '../../../../lib/1core/legacy-content.mjs';
-import { migrate } from '../../../../lib/1core/migrate.mjs';
-import pkg from '../../package.json' with { type: 'json' };
+import { get, put } from '../../../lib/1core/content.mjs';
+import { initInstance } from '../../../lib/1core/init.mjs';
+import { legacyGet } from '../../../lib/1core/legacy-content.mjs';
+import { migrate } from '../../../lib/1core/migrate.mjs';
+import { appName, legacyAppName } from './app-name.mjs';
 
 /** @typedef {import('@astrobase/sdk/cid').ContentIdentifier} IndexValue */
 
@@ -11,9 +11,15 @@ import pkg from '../../package.json' with { type: 'json' };
  * @returns {Promise<import('@astrobase/sdk/instance').Instance>}
  */
 export const init = async (dbFilePath) =>
-  // @ts-expect-error
-  (await migrate(dbFilePath, pkg.name, cloneCallback, updateEntryCallback, checkCallback)) ??
-  (await initInstance(dbFilePath, pkg.name));
+  (await migrate(
+    dbFilePath,
+    legacyAppName,
+    appName,
+    // @ts-expect-error
+    cloneCallback,
+    updateEntryCallback,
+    checkCallback,
+  )) ?? (await initInstance(dbFilePath, appName));
 
 /**
  * @param {Record<string, IndexValue>} index
@@ -32,8 +38,8 @@ function cloneCallback(index, [id, cid]) {
  * @returns {Promise<IndexValue>}
  */
 async function updateEntryCallback(entry, oldInstance, newInstance) {
-  const content = await legacyGet(oldInstance, pkg.name, entry, 'application/octet-stream');
-  return put(newInstance, pkg.name, content, 'application/octet-stream');
+  const content = await legacyGet(oldInstance, legacyAppName, entry, 'application/octet-stream');
+  return put(newInstance, appName, content, 'application/octet-stream');
 }
 
 /**

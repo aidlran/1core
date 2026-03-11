@@ -15,6 +15,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["apps/*/src/**/*", "lib/1core/**/*", "lib/test/**/*"],
+  "include": ["apps/**/*", "lib/1core/**/*", "lib/test/**/*"],
   "exclude": ["apps/pulse/**/*"]
 }

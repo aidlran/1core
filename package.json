@@ -10,8 +10,8 @@
   "author": "Aidan Loughran",
   "type": "module",
   "bin": {
-    "1core-note": "apps/note/src/cli.mjs",
-    "1core-vault": "apps/vault/src/cli.mjs"
+    "1core-note": "apps/note/cli.mjs",
+    "1core-vault": "apps/vault/cli.mjs"
   },
   "workspaces": [
     "apps/*",
@@ -19,11 +19,15 @@
   ],
   "scripts": {
     "build": "npm run build -w lib/astrobase",
-    "ci": "conc npm:check npm:lint npm:test",
     "check": "tsc --noEmit",
+    "ci": "conc npm:check npm:lint npm:test",
     "format": "prettier --write .",
     "lint": "eslint .",
     "test": "vitest run"
+  },
+  "dependencies": {
+    "commander": "^14.0.3",
+    "env-paths": "3.0.0"
   },
   "devDependencies": {
     "@types/eslint": "^9.6.1",
