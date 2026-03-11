@@ -11,13 +11,17 @@
   "type": "module",
   "bin": "apps/cli/cli.mjs",
   "workspaces": [
-    "apps/*",
-    "lib/*"
+    "lib/astrobase"
   ],
   "scripts": {
-    "build": "bun build --target=node --minify --outfile=dist/cli.mjs apps/cli/cli.mjs",
+    "build": "conc npm:build:cli npm:build:pulse:native",
+    "build:cli": "bun build --target=node --minify --outfile=dist/cli.mjs apps/cli/cli.mjs",
+    "build:pulse:native": "cd apps/pulse && tauri build",
+    "build:pulse:web": "cd apps/pulse && vinxi build",
     "check": "tsc --noEmit",
     "ci": "conc npm:build npm:check npm:lint npm:test",
+    "dev:pulse:native": "cd apps/pulse && tauri dev",
+    "dev:pulse:web": "cd apps/pulse && vinxi dev",
     "format": "prettier --write .",
     "postinstall": "npm run build -w lib/astrobase",
     "lc": "echo \"$( bun build --target=node apps/cli/cli.mjs | wc -l ) lines, $( bun build --target=node --minify apps/cli/cli.mjs | wc -c ) bytes\"",
@@ -25,14 +29,19 @@
     "test": "vitest run"
   },
   "overrides": {
-    "h3": "^1.15.6",
-    "@rollup/plugin-terser": "^1.0.0"
+    "@rollup/plugin-terser": "^1.0.0",
+    "h3": "^1.15.6"
   },
   "dependencies": {
     "commander": "^14.0.3",
     "env-paths": "3.0.0"
   },
   "devDependencies": {
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.15.4",
+    "@solidjs/start": "^1.3.2",
+    "@tailwindcss/vite": "^4.2.1",
+    "@tauri-apps/cli": "^2.10.1",
     "@types/eslint": "^9.6.1",
     "concurrently": "^9.2.1",
     "eslint": "^9.39.4",
@@ -41,8 +50,14 @@
     "globals": "^17.4.0",
     "prettier": "^3.8.1",
     "prettier-plugin-jsdoc": "^1.8.0",
+    "solid-js": "^1.9.11",
+    "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.0",
+    "vinxi": "^0.5.11",
     "vitest": "^4.0.18"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

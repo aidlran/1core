@@ -6,8 +6,8 @@
   "build": {
     "frontendDist": "../.output/public",
     "devUrl": "http://localhost:3000",
-    "beforeDevCommand": "npm run web:dev",
-    "beforeBuildCommand": "npm run web:build"
+    "beforeDevCommand": "vinxi dev",
+    "beforeBuildCommand": "vinxi build"
   },
   "app": {
     "windows": [
