@@ -10,27 +10,20 @@
   "author": "Aidan Loughran",
   "type": "module",
   "bin": "apps/cli/cli.mjs",
-  "workspaces": [
-    "lib/astrobase"
-  ],
   "scripts": {
-    "build": "conc npm:build:cli npm:build:pulse:native",
+    "build": "conc pnpm:build:cli pnpm:build:pulse:native",
     "build:cli": "bun build --target=node --minify --outfile=dist/cli.mjs apps/cli/cli.mjs",
     "build:pulse:native": "cd apps/pulse && tauri build",
     "build:pulse:web": "cd apps/pulse && vinxi build",
     "check": "tsc --noEmit",
-    "ci": "conc npm:build npm:check npm:lint npm:test",
+    "ci": "conc pnpm:build pnpm:check pnpm:lint pnpm:test",
     "dev:pulse:native": "cd apps/pulse && tauri dev",
     "dev:pulse:web": "cd apps/pulse && vinxi dev",
     "format": "prettier --write .",
-    "postinstall": "npm run build -w lib/astrobase",
+    "postinstall": "cd lib/astrobase && pnpm run build",
     "lc": "echo \"$( bun build --target=node apps/cli/cli.mjs | wc -l ) lines, $( bun build --target=node --minify apps/cli/cli.mjs | wc -c ) bytes\"",
     "lint": "eslint .",
     "test": "vitest run"
-  },
-  "overrides": {
-    "@rollup/plugin-terser": "^1.0.0",
-    "h3": "^1.15.6"
   },
   "dependencies": {
     "commander": "^14.0.3",
