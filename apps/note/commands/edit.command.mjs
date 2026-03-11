@@ -7,15 +7,15 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { get, getIndex, put, saveIndex } from '../../../lib/1core/content.mjs';
 import { dbOption } from '../../../lib/1core/db.option.mjs';
+import { initInstance } from '../../../lib/1core/init.mjs';
 import { appName } from '../lib/app-name.mjs';
-import { init } from '../lib/init.mjs';
 
 export default new Command('edit')
   .argument('<name>')
   .description(`Edit or create a note with EDITOR (${process.env.EDITOR})`)
   .addOption(dbOption())
   .action(async (name, { db }) => {
-    const instance = await init(db);
+    const instance = await initInstance(db, appName);
 
     /** @type {Record<string, import('@astrobase/sdk/cid').ContentIdentifier>} */
     const index = (await getIndex(instance, appName)) || {};

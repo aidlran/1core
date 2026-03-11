@@ -1,8 +1,8 @@
 import { Command } from 'commander';
 import { get, getIndex } from '../../../lib/1core/content.mjs';
 import { dbOption } from '../../../lib/1core/db.option.mjs';
+import { initInstance } from '../../../lib/1core/init.mjs';
 import { appName } from '../lib/app-name.mjs';
-import { init } from '../lib/init.mjs';
 import readStdin from '../lib/read-stdin.mjs';
 import setNote from '../lib/set-note.mjs';
 import timeoutOption from '../options/timeout.option.mjs';
@@ -15,7 +15,7 @@ export default new Command('append')
   .action(async (name, { db, timeout }) => {
     const chunks = await readStdin(timeout);
 
-    const instance = await init(db);
+    const instance = await initInstance(db, appName);
 
     /** @type {Record<string, import('@astrobase/sdk/cid').ContentIdentifier>} */
     const index = (await getIndex(instance, appName)) || {};

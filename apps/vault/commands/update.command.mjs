@@ -1,7 +1,8 @@
 import { Command } from 'commander';
 import { dbOption } from '../../../lib/1core/db.option.mjs';
+import { initInstance } from '../../../lib/1core/init.mjs';
+import { appName } from '../lib/app-name.mjs';
 import { getAssertedEntryProps, saveEntry } from '../lib/content.mjs';
-import { init } from '../lib/init.mjs';
 import { promptSecrets } from '../lib/prompt.mjs';
 import { propertyOption } from '../options/property.option.mjs';
 import { secretOption } from '../options/secret.options.mjs';
@@ -14,7 +15,7 @@ export default new Command('update')
   .addOption(secretOption)
   .option('-d, --delete <keys-to-delete...>', 'specify keys to delete')
   .action(async (id, { db, delete: keysToDelete, property, secret }) => {
-    const instance = await init(db);
+    const instance = await initInstance(db, appName);
 
     const props = await getAssertedEntryProps(instance, id);
 

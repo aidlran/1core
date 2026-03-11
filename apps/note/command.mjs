@@ -8,7 +8,6 @@ import deleteCommand from './commands/delete.command.mjs';
 import editCommand from './commands/edit.command.mjs';
 import setCommand from './commands/set.command.mjs';
 import { appName } from './lib/app-name.mjs';
-import { init } from './lib/init.mjs';
 
 export default new Command('note')
   .description('An encrypted notes app using Astrobase.')
@@ -17,6 +16,6 @@ export default new Command('note')
   .addCommand(catCommand)
   .addCommand(deleteCommand)
   .addCommand(editCommand)
-  .addCommand(listCommand(appName, init))
-  .addCommand(renameCommand(appName, init))
+  .addCommand(listCommand(appName))
+  .addCommand(renameCommand(appName))
   .addCommand(setCommand);

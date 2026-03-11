@@ -7,7 +7,6 @@ import deleteCommand from './commands/delete.command.mjs';
 import getCommand from './commands/get.command.mjs';
 import updateCommand from './commands/update.command.mjs';
 import { appName } from './lib/app-name.mjs';
-import { init } from './lib/init.mjs';
 
 export default new Command('vault')
   .description('A secure password and secrets management CLI utility using Astrobase')
@@ -15,6 +14,6 @@ export default new Command('vault')
   .addCommand(addCommand)
   .addCommand(deleteCommand)
   .addCommand(getCommand)
-  .addCommand(listCommand(appName, init))
-  .addCommand(renameCommand(appName, init))
+  .addCommand(listCommand(appName))
+  .addCommand(renameCommand(appName))
   .addCommand(updateCommand);
