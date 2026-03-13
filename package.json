@@ -15,11 +15,10 @@
     "lib/*"
   ],
   "scripts": {
-    "build": "bun build --target=node --minify --outfile=dist/cli.mjs apps/cli/cli.mjs",
+    "build": "npm run build -w lib/astrobase",
     "check": "tsc --noEmit",
     "ci": "conc npm:build npm:check npm:lint npm:test",
     "format": "prettier --write .",
-    "postinstall": "npm run build -w lib/astrobase",
     "lc": "echo \"$( bun build --target=node apps/cli/cli.mjs | wc -l ) lines, $( bun build --target=node --minify apps/cli/cli.mjs | wc -c ) bytes\"",
     "lint": "eslint .",
     "test": "vitest run"
@@ -29,6 +28,10 @@
     "@rollup/plugin-terser": "^1.0.0"
   },
   "dependencies": {
+    "@bitcoinerlab/secp256k1": "^1.2.0",
+    "@noble/secp256k1": "^3.0.0",
+    "better-sqlite3": "^12.6.2",
+    "bip32": "^5.0.1",
     "commander": "^14.0.3",
     "env-paths": "3.0.0"
   },
