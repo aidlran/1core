@@ -7,7 +7,7 @@ export interface EditableTextProps extends Omit<JSX.IntrinsicElements['input'], 
 export function EditableText(props: EditableTextProps): JSX.Element {
   const [editing, setEditing] = createSignal(false);
 
-  let input!: HTMLInputElement;
+  let input: HTMLInputElement;
 
   return (
     <Show
@@ -26,7 +26,7 @@ export function EditableText(props: EditableTextProps): JSX.Element {
       <input
         {...props}
         value={props.value()}
-        ref={input}
+        ref={(e) => (input = e)}
         on:blur={() => setEditing(false)}
         on:keydown={(e) => (e.key === 'Escape' || e.key === 'Enter') && input.blur()}
       />

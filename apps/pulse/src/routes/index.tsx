@@ -33,7 +33,7 @@ export default (): JSX.Element => (
         const [hideCompleted, setHideCompleted] = createSignal(true);
         const [hideFuture, setHideFuture] = createSignal(true);
 
-        let newTaskInput!: HTMLInputElement;
+        let newTaskInput: HTMLInputElement;
 
         const entityRoot = getEntityRootForDerivedIdentity('1core');
 
@@ -94,7 +94,7 @@ export default (): JSX.Element => (
                   <tr>
                     <td colspan="8">
                       <input
-                        ref={newTaskInput}
+                        ref={(e) => (newTaskInput = e)}
                         class="w-full"
                         placeholder="New task"
                         on:blur={(e) => {
@@ -112,7 +112,7 @@ export default (): JSX.Element => (
                 <For each={entityRoot.entities()}>
                   {(entity, i) => {
                     const [addingDependency, setAddingDependency] = createSignal(false);
-                    let dependencyInput!: HTMLInputElement;
+                    let dependencyInput: HTMLInputElement;
 
                     const EditableDateCell = (props: {
                       value: Signal<number | undefined>;
@@ -220,7 +220,7 @@ export default (): JSX.Element => (
                                 <input
                                   class="grow"
                                   list="tasks"
-                                  ref={dependencyInput}
+                                  ref={(e) => (dependencyInput = e)}
                                   on:change={async (e) => {
                                     e.target.blur();
                                     const dependee = entityRoot

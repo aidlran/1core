@@ -9,7 +9,7 @@ describe('Add command', () => {
 
     const email = 'hello@example.com';
 
-    const addResult = await spawnCommand(__dirname, 'add', {
+    const addResult = await spawnCommand('vault', 'add', {
       args: [id, '-p', `email=${email}`, '-s', 'password'],
       cleanup: false,
     });
@@ -22,7 +22,7 @@ describe('Add command', () => {
     expect(stderr).toBe('');
     expect(stdout).toBe('');
 
-    ({ exitCode, stderr, stdout } = await spawnCommand(__dirname, 'get', {
+    ({ exitCode, stderr, stdout } = await spawnCommand('vault', 'get', {
       args: [id],
       dbFile,
     }));
@@ -35,7 +35,7 @@ describe('Add command', () => {
   it('Refuses and warns if secret passed on command line', async () => {
     const id = generateID();
 
-    const { exitCode, stderr, stdout } = await spawnCommand(__dirname, 'add', {
+    const { exitCode, stderr, stdout } = await spawnCommand('vault', 'add', {
       args: [id, '-s', `password=${passphrase}`],
     });
 
@@ -50,12 +50,12 @@ describe('Add command', () => {
   it('Refuses if ID already exists', async () => {
     const id = generateID();
 
-    const { dbFile } = await spawnCommand(__dirname, 'add', {
+    const { dbFile } = await spawnCommand('vault', 'add', {
       args: [id],
       cleanup: false,
     });
 
-    const { exitCode, stderr, stdout } = await spawnCommand(__dirname, 'add', {
+    const { exitCode, stderr, stdout } = await spawnCommand('vault', 'add', {
       args: [id],
       dbFile,
     });

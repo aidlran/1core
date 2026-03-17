@@ -10,7 +10,7 @@ describe('Update command', () => {
     const email = 'hello@example.com';
     const username = 'luna';
 
-    const addResult = await spawnCommand(__dirname, 'add', {
+    const addResult = await spawnCommand('vault', 'add', {
       args: [id, '-p', 'email=' + email, '-p', 'note=abcd', '-s', 'password'],
       cleanup: false,
     });
@@ -21,7 +21,7 @@ describe('Update command', () => {
 
     const { dbFile } = addResult;
 
-    const getResultBefore = await spawnCommand(__dirname, 'get', {
+    const getResultBefore = await spawnCommand('vault', 'get', {
       args: [id],
       cleanup: false,
       dbFile,
@@ -31,7 +31,7 @@ describe('Update command', () => {
     expect(getResultBefore.stderr).toBe('');
     expect(getResultBefore.stdout).not.toBe('');
 
-    const updateResult = await spawnCommand(__dirname, 'update', {
+    const updateResult = await spawnCommand('vault', 'update', {
       args: [id, '-p', 'username=' + username, '-s', '2FA code', '-d', 'note'],
       cleanup: false,
       dbFile,
@@ -41,7 +41,7 @@ describe('Update command', () => {
     expect(updateResult.stderr).toBe('');
     expect(updateResult.stdout).toBe('');
 
-    const getResultAfter = await spawnCommand(__dirname, 'get', {
+    const getResultAfter = await spawnCommand('vault', 'get', {
       args: [id],
       dbFile,
     });
@@ -107,7 +107,7 @@ describe('Update command', () => {
   it('Refuses if ID does not exist', async () => {
     const id = generateID();
 
-    const { exitCode, stderr, stdout } = await spawnCommand(__dirname, 'update', {
+    const { exitCode, stderr, stdout } = await spawnCommand('vault', 'update', {
       args: [id],
     });
 
@@ -119,7 +119,7 @@ describe('Update command', () => {
   it('Refuses and warns if secret passed on command line', async () => {
     const id = generateID();
 
-    const addResult = await spawnCommand(__dirname, 'add', {
+    const addResult = await spawnCommand('vault', 'add', {
       args: [id],
       cleanup: false,
     });
@@ -130,7 +130,7 @@ describe('Update command', () => {
 
     const { dbFile } = addResult;
 
-    const getResultBefore = await spawnCommand(__dirname, 'get', {
+    const getResultBefore = await spawnCommand('vault', 'get', {
       args: [id],
       cleanup: false,
       dbFile,
@@ -140,7 +140,7 @@ describe('Update command', () => {
     expect(getResultBefore.stderr).toBe('');
     expect(getResultBefore.stdout).not.toBe('');
 
-    const updateResult = await spawnCommand(__dirname, 'update', {
+    const updateResult = await spawnCommand('vault', 'update', {
       args: [id, '-s', `password=${passphrase}`],
       cleanup: false,
       dbFile,
@@ -153,7 +153,7 @@ describe('Update command', () => {
         '\n--secret cannot accept a value on the command line for security reasons\n',
     );
 
-    const getResultAfter = await spawnCommand(__dirname, 'get', {
+    const getResultAfter = await spawnCommand('vault', 'get', {
       args: [id],
       dbFile,
     });

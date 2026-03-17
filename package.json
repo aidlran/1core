@@ -3,38 +3,55 @@
   "version": "0.1.0",
   "private": true,
   "description": "1core app suite monorepo",
-  "homepage": "https://github.com/1coreio/1core#readme",
-  "bugs": "https://github.com/1coreio/1core/issues",
-  "repository": "github:1coreio/1core",
+  "homepage": "https://github.com/aidlran/1core#readme",
+  "bugs": "https://github.com/aidlran/1core/issues",
+  "repository": "github:aidlran/1core",
   "license": "AGPL-3.0-only",
   "author": "Aidan Loughran",
   "type": "module",
   "bin": "apps/cli/cli.mjs",
+  "files": [
+    "dist"
+  ],
+  "workspaces": [
+    "lib/astrobase"
+  ],
   "scripts": {
-    "build": "conc pnpm:build:cli pnpm:build:pulse:native",
-    "build:cli": "bun build --target=node --minify --outfile=dist/cli.mjs apps/cli/cli.mjs",
-    "build:pulse:native": "cd apps/pulse && tauri build",
-    "build:pulse:web": "cd apps/pulse && vinxi build",
-    "check": "tsc --noEmit",
-    "ci": "conc pnpm:build pnpm:check pnpm:lint pnpm:test",
-    "dev:pulse:native": "cd apps/pulse && tauri dev",
-    "dev:pulse:web": "cd apps/pulse && vinxi dev",
-    "format": "prettier --write .",
-    "postinstall": "cd lib/astrobase && pnpm run build",
-    "lc": "echo \"$( bun build --target=node apps/cli/cli.mjs | wc -l ) lines, $( bun build --target=node --minify apps/cli/cli.mjs | wc -c ) bytes\"",
-    "lint": "eslint .",
-    "test": "vitest run"
+    "build": "bun x --bun conc bun:build:cli bun:build:pulse:native",
+    "build:cli": "bun build --target=bun --minify --outfile=dist/1core-cli.mjs apps/cli/cli.mjs",
+    "build:cli:all": "bun scripts/build-cli-all.mjs",
+    "build:pulse:native": "cd apps/pulse && bun x --bun tauri build",
+    "build:pulse:web": "cd apps/pulse && bun x --bun vinxi build",
+    "check": "bun x --bun tsc --noEmit",
+    "ci": "bun x --bun conc bun:build:pulse:native bun:check bun:lint bun:test",
+    "dev:pulse:native": "cd apps/pulse && bun x --bun tauri dev",
+    "dev:pulse:web": "cd apps/pulse && bun x --bun vinxi dev",
+    "format": "bun x --bun prettier --write .",
+    "postinstall": "cd lib/astrobase && bun --bun run build",
+    "lc": "echo \"$( bun build --target=bun apps/cli/cli.mjs | wc -l ) lines, $( bun build --target=bun --minify apps/cli/cli.mjs | wc -c ) bytes\"",
+    "lint": "bun x --bun eslint .",
+    "test": "bun x --bun vitest run"
+  },
+  "overrides": {
+    "@rollup/plugin-terser": "^1.0.0",
+    "h3": "^1.15.6"
   },
   "dependencies": {
+    "@astrobase/sdk": "workspace:lib/astrobase",
+    "@bitcoinerlab/secp256k1": "^1.2.0",
+    "@noble/secp256k1": "^3.0.0",
+    "bip32": "^5.0.1",
     "commander": "^14.0.3",
     "env-paths": "3.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.4",
     "@solidjs/start": "^1.3.2",
     "@tailwindcss/vite": "^4.2.1",
     "@tauri-apps/cli": "^2.10.1",
+    "@types/bun": "1.3.10",
     "@types/eslint": "^9.6.1",
     "concurrently": "^9.2.1",
     "eslint": "^9.39.4",
@@ -48,7 +65,7 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.0",
     "vinxi": "^0.5.11",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": ">=22"

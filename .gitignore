@@ -2,7 +2,7 @@
 .vinxi/
 build/
 coverage/
-dist/
+/dist/
 node_modules/
 **/src-tauri/gen/schemas/
 **/src-tauri/target/

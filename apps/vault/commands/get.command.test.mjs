@@ -7,7 +7,7 @@ describe('Get command', () => {
   it('Refuses if entry does not exist', async () => {
     const id = generateID();
 
-    const { exitCode, stderr, stdout } = await spawnCommand(__dirname, 'get', {
+    const { exitCode, stderr, stdout } = await spawnCommand('vault', 'get', {
       args: [id],
     });
 
@@ -21,12 +21,12 @@ describe('Get command', () => {
 
     const email = 'hello@example.com';
 
-    const { dbFile } = await spawnCommand(__dirname, 'add', {
+    const { dbFile } = await spawnCommand('vault', 'add', {
       args: [id, '-p', `email=${email}`, '-s', 'password'],
       cleanup: false,
     });
 
-    const { exitCode, stderr, stdout } = await spawnCommand(__dirname, 'get', {
+    const { exitCode, stderr, stdout } = await spawnCommand('vault', 'get', {
       args: [id],
       dbFile,
     });
